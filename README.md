@@ -11,7 +11,7 @@ mkdir Images
 mkdir model
 ```
 
-Paste file * *cc.vi.300.bin* * , * *Flickr8k.token.txt* * ; Folder * *Image_captioning* * , * *Image_emotion* * to * *statics/model* *
+Paste file *cc.vi.300.bin* , *Flickr8k.token.txt* ; Folder *Image_captioning* , *Image_emotion* to *statics/model*
 
 ## AI API
 
