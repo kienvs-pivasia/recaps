@@ -21,5 +21,7 @@ Listen on : http://127.0.0.1:8080
 Using the database recorded in the file **run_db.py**
 
 > Config username:password@host/db_name at backend/model.py
+
 > Create_app just one time
+
 > Create Database **db_name** in mariadb first
