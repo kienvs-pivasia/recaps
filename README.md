@@ -9,25 +9,18 @@ mkdir statics
 cd statics
 mkdir Images
 mkdir model
+cd ../
+python create_db.py
 ```
 
 Paste file *cc.vi.300.bin* , *Flickr8k.token.txt* ; Folder *Image_captioning* , *Image_emotion* to *statics/model*
 
-## AI API
+## API:
 
-AI API:
-
-```
-python api.py
-```
-
-Listen on : http://127.0.0.1:8080
+Listen on : http://127.0.0.1:5000
 
 ## Database:
-Using the database recorded in the file **run_db.py**
 
 > Config username:password@host/db_name at backend/model.py
-
-> Create_app just one time
 
 > Create Database **db_name** in mariadb first
