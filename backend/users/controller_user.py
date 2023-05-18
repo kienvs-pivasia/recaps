@@ -13,7 +13,7 @@ def login_user():
     from .service_user import login_user_service
     return login_user_service()
 
-@user_bp.route("/logout")
+@user_bp.route("/logout", methods=['GET'])
 def logout_user():
     from .service_user import log_out_service
     return log_out_service()

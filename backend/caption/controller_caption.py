@@ -1,5 +1,5 @@
 from flask import Blueprint
-from .service_caption import (get_all_captions_service, get_caption_favorite_service, get_des_service, get_emotion_service,
+from .service_caption import (get_all_captions_admin_service, get_caption_favorite_service, get_des_service, get_emotion_service,
                       get_list_caption_login_service, get_list_caption_no_login_service , get_list_tag_service, get_tag_by_id_service,
                       add_caption_service, delete_caption_service, add_favorite_service, remove_favorite_service, edit_content_service,
                       edit_emotion_service, edit_tag_id_service)
@@ -11,7 +11,7 @@ caption_bp = Blueprint("caption", __name__, url_prefix="/caption")
 @caption_bp.route("/get_all_caption", methods=["GET"], endpoint='func1' )
 @jwt_required
 def get_all_caption():
-    return get_all_captions_service()
+    return get_all_captions_admin_service()
 
 @caption_bp.route("/get_caption_favorite", methods=["GET"], endpoint='func2')
 @jwt_required

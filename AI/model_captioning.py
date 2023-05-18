@@ -479,11 +479,11 @@ class LRSchedule(keras.optimizers.schedules.LearningRateSchedule):
 
 caption_model.load_weights('statics/model/Image_captioning/keras_imagecaptioning')
 
-img_url = "https://images.squarespace-cdn.com/content/v1/5e0e65adcd39ed279a0402fd/1627422658456-7QKPXTNQ34W2OMBTESCJ/1.jpg?format=2500w"
+# img_url = "https://images.squarespace-cdn.com/content/v1/5e0e65adcd39ed279a0402fd/1627422658456-7QKPXTNQ34W2OMBTESCJ/1.jpg?format=2500w"
 
-im = Image.open(requests.get(img_url, stream=True).raw)
-im = im.convert('RGB')
-im.save('tmp.jpg')
+# im = Image.open(requests.get(img_url, stream=True).raw)
+# im = im.convert('RGB')
+# im.save('tmp.jpg')
 
 vocab = vectorization.get_vocabulary()
 index_lookup = dict(zip(range(len(vocab)), vocab))

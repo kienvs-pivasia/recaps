@@ -16,20 +16,17 @@ app = Flask(__name__)
 
 # Input: request file image
 # Output: caption of image, image link
-@app.route('/emotion', methods=['POST'])
-def emo():
+@app.route('/caption', methods=['POST'])
+def caption():
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
-
     file = request.files['file']
     if not file:
         return jsonify({'error': 'invalid file'}), 400
-
     try:
         img = Image.open(file)
         if not os.path.exists('Statics/Images/uploads'):
             os.mkdir('Statics/Images/uploads')
-
         filename = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '-' + file.filename
         filelink = os.path.join('Statics/Images/uploads', filename)
         img.save(filelink)
@@ -39,8 +36,8 @@ def emo():
 
 # Input: request file image
 # Output: sentiment of image, image link
-@app.route('/caption', methods=['POST'])
-def caption():
+@app.route('/emotion', methods=['POST'])
+def emo():
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
 

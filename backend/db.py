@@ -5,5 +5,5 @@ from flask_marshmallow import Marshmallow
 app = create_app()
 # db = SQLAlchemy(app)
 db = SQLAlchemy()
-ma = Marshmallow(app)
+ma = Marshmallow()
 cacheNewFeed = []

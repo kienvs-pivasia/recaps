@@ -31,9 +31,9 @@ def load_logged_in_user():
     if current_identity is None:
         g.user = None
     else:
-        g.user = g.dbsession.query(User).filter(username=current_identity).one()
+        g.user = g.dbsession.query(User).filter_by(email=current_identity).one()
 
 @bp.route("/")
 @bp.route("/index")
 def index():
-    return redirect(url_for("user.login_user"))
+    return redirect(url_for(""))

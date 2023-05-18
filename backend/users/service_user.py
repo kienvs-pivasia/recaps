@@ -1,4 +1,4 @@
-from ..model import User
+from backend.model import User
 from flask import request, g, jsonify, render_template, redirect, url_for
 from flask_jwt_extended import (
     create_access_token,
@@ -6,52 +6,67 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
     JWTManager
 )
+import requests
+import json
 
 def register_user_service():
     if request.method == "POST":
         username = request.json["username"]
+        email = request.json["email"]
         password = request.json["password"]
         response = None
         
         if response is None:
-            user = g.dbsession.query(User).filter(username=username).first()
+            user = g.dbsession.query(User).filter_by(email=email).first()
             if user:
                 response = "Username is already exist"
             else:
                 try:
-                    newUser = User(username=username, password=password)
+                    newUser = User(username=username, email=email, password=password)
                     g.dbsession.add(newUser)
                     g.dbsession.commit()
                     g.dbsession.close()
-                    return redirect(url_for("user.login_user"))
+                    data = {'email': email, 'password': password}
+                    # data = {'email': email, 'password': password}
+                    headers = {'Content-Type': 'application/json'}
+                    response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
+                    if response.status_code == 200:
+                        # Nếu đăng nhập thành công, chuyển hướng đến trang chính
+                        # return redirect(url_for('main_page'))
+                        return redirect(url_for("user.login_user"))
+                    else:
+                        # Nếu đăng nhập thất bại, trả về lỗi
+                        return {'error': 'Đăng nhập thất bại'}
                 except IndentationError:
                     response = "Cannot register"
 
         return response
     
 def login_user_service():
+    from flask import make_response
     if request.method == "POST":
-        username = request.json["username"]
+        email = request.json["email"]
         password = request.json["password"]
         response = None
 
-        if username and password:
-            user = g.dbsession.query(User).filter(username=username).first()
-
-            if user is None or user.password != password:
+        if email and password:
+            user = g.dbsession.query(User).filter_by(email=email).first()
+            if user is None or str(user.password) != str(password):
                 response = "Incorrect username or password"
             else:
                 try:
-                    access_token = create_access_token(identity=username)
-                    response = "Success"
+                    access_token = create_access_token(identity=email)
+                    response = make_response("Success")
                     set_access_cookies(response, access_token)
                     return response
                 except IndentationError:
                     response = "Cannot login"
 
         return response
+    else:
+        print("Method error")
     
 def log_out_service():
-    response = redirect(url_for("user.login_user"))
+    response = redirect(url_for("auth.index"))
     unset_jwt_cookies(response)
     return response
