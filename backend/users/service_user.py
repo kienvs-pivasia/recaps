@@ -26,16 +26,16 @@ def register_user_service():
                     g.dbsession.add(newUser)
                     g.dbsession.commit()
                     g.dbsession.close()
-                    data = {'email': email, 'password': password}
+                    data = {'username':username, 'email': email, 'password': password}
                     # data = {'email': email, 'password': password}
                     headers = {'Content-Type': 'application/json'}
                     response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
                     if response.status_code == 200:
                         # Nếu đăng nhập thành công, chuyển hướng đến trang chính
                         # return redirect(url_for('main_page'))
-                        return redirect(url_for("user.login_user"))
+                        return data
                     else:
-                        # Nếu đăng nhập thất bại, trả về lỗi
+                    #     # Nếu đăng nhập thất bại, trả về lỗi
                         return {'error': 'Đăng nhập thất bại'}
                 except IndentationError:
                     response = "Cannot register"
@@ -64,7 +64,7 @@ def login_user_service():
 
         return response
     else:
-        print("Method error")
+        return print("Method error")
     
 def log_out_service():
     response = redirect(url_for("auth.index"))

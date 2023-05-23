@@ -99,7 +99,7 @@ class UsersSchema(ma.Schema):
 
 class CaptionSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'content', 'author_id', 'created_at', 'emotion')
+        fields = ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 
 class TagSchema(ma.Schema):
     class Meta:
