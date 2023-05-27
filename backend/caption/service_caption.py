@@ -241,7 +241,7 @@ def add_favorite_service(id):
     else:
         return "This id is not exist"
 
-def remove_favorite_service():
+def remove_favorite_service(id):
     from ..model import User, Caption
 
     user = session.query(User).filter_by(id=1).first() #replace to g.id

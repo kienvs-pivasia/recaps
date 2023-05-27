@@ -67,8 +67,8 @@ def add_favorite(id):
 
 @caption_bp.route("/remove_favorite/<id>", methods=["POST"], endpoint='func12')
 # @jwt_required
-def remove_favorite():
-    return remove_favorite_service()
+def remove_favorite(id):
+    return remove_favorite_service(id)
 
 @caption_bp.route("/edit_content/<id>", methods=["PUT"], endpoint='func13')  #done
 # @jwt_required
