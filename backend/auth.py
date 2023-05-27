@@ -1,5 +1,6 @@
-from flask import Blueprint, g, redirect, url_for
+from flask import Blueprint, g, redirect, url_for, render_template_string
 from sqlalchemy.orm import sessionmaker
+import requests
 from flask_jwt_extended import(
     get_jwt,
     create_access_token,
@@ -36,4 +37,6 @@ def load_logged_in_user():
 @bp.route("/")
 @bp.route("/index")
 def index():
-    return redirect(url_for(""))
+    response = requests.get('http://localhost:3000')
+    return render_template_string(response.content)
+    # return render_template("front-end/src/pages/index.tsx")

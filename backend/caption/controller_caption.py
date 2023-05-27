@@ -2,7 +2,7 @@ from flask import Blueprint
 from .service_caption import (get_all_captions_admin_service, get_caption_favorite_service, get_des_service, get_emotion_service,
                       get_list_caption_login_service, get_list_caption_no_login_service , get_list_tag_service, get_tag_by_id_service,
                       add_caption_service, delete_caption_service, add_favorite_service, remove_favorite_service, edit_content_service,
-                      edit_emotion_service, edit_tag_id_service)
+                      edit_emotion_service, edit_tag_id_service, add_image_service)
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -12,6 +12,11 @@ caption_bp = Blueprint("caption", __name__, url_prefix="/caption")
 # @jwt_required
 def get_all_caption():
     return get_all_captions_admin_service()
+
+@caption_bp.route("/add_image", methods=["POST"], endpoint='func16') #done
+# @jwt_required
+def add_image():
+    return add_image_service()
 
 @caption_bp.route("/get_caption_favorite", methods=["GET"], endpoint='func2') #done
 # @jwt_required
@@ -31,7 +36,7 @@ def get_emotion():
 def get_list_caption_login():
     return get_list_caption_login_service()
 
-@caption_bp.route("/get_list_caption_no_login", methods=["GET"], endpoint='func6')
+@caption_bp.route("/get_list_caption_no_login", methods=["GET"], endpoint='func6') #done
 def get_list_caption_no_login():
     return get_list_caption_no_login_service()
 
@@ -55,10 +60,10 @@ def add_caption():
 def delate_caption(id):
     return delete_caption_service(id)
 
-@caption_bp.route("/add_favorite/<id>", methods=["POST"], endpoint='func11')
+@caption_bp.route("/add_favorite/<id>", methods=["POST"], endpoint='func11') #done
 # @jwt_required
-def add_favorite():
-    return add_favorite_service()
+def add_favorite(id):
+    return add_favorite_service(id)
 
 @caption_bp.route("/remove_favorite/<id>", methods=["POST"], endpoint='func12')
 # @jwt_required

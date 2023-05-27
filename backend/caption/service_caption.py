@@ -18,6 +18,7 @@ from flask_jwt_extended import get_jwt_identity
 import fasttext
 import datetime
 from keras.models import load_model
+import os
 
 #load model AI
 emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
@@ -28,6 +29,28 @@ engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/
 Session = sessionmaker(bind=engine)
 session = Session()
 
+def add_image_service():
+    from ..model import Image
+    import cv2
+    if 'file' not in request.files:
+        return jsonify({'error': 'no file provided'}), 400
+    file = request.files['file']
+    if not file:
+        return jsonify({'error': 'invalid file'}), 400
+    try:
+        if not os.path.exists('statics/Images/uploads'):
+            os.mkdir('statics/Images/uploads')
+        filename = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '-' + file.filename
+        filelink = os.path.join('statics/Images/uploads', filename)
+        file.save(filelink)
+        user_id = 1 # replace to g.id
+        new_image = Image(url=str(filelink), user_id=user_id, upload_time=datetime.datetime.now())
+        session.add(new_image)
+        session.commit()
+        return jsonify({'image_dir': filelink, 'user_id':user_id, 'upload_time':datetime.datetime.now()})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 def get_all_captions_admin_service():
     from ..model import Caption, captions_schema
     all_captions = session.query(Caption).filter(Caption.author_id == 1).all()
@@ -136,7 +159,7 @@ def get_list_caption_no_login_service():
         des = generate_caption_img(filelink)
         print("a")
         translator = Translator()
-        des = translator.translate(des, dest="vi")
+        des = translator.translate(des, dest="vi").text
         list_cap = []
         print("b")
         vector_des = sentence_embedding(des, ft_md)
@@ -203,29 +226,35 @@ def get_tag_by_id_service(id):
         msg = "This id is not exist"
         return msg
 
-def add_favorite_service():
-    from ..model import Caption, captions_schema
-    msg = None
-    caption = session.query(Caption).filter(Caption.id == g.id).first()
-    if caption.author_id != 1: # replace to g.id
-        msg = "This caption is not belong to you"
-        return msg
-    else:
-        caption.favorite=True
+def add_favorite_service(id):
+    from ..model import User, Caption
+
+    user = session.query(User).filter_by(id=1).first() #replace to g.id
+    caption = session.query(Caption).filter_by(id=id).first()
+    if caption:
+        user.favourite_captions.append(caption)
+
+        session.add(user)
         session.commit()
-    return captions_schema.jsonify(caption)
+
+        return jsonify({"caption": caption.content, "user": user.username})
+    else:
+        return "This id is not exist"
 
 def remove_favorite_service():
-    from ..model import Caption, captions_schema
-    msg = None
-    caption = session.query(Caption).filter(Caption.id == g.id).fisrt()
-    if caption.author_id != 1: # replace to g.id
-        msg = "This caption is not belong to you"
-        return msg
-    else:
-        caption.favorite=False
+    from ..model import User, Caption
+
+    user = session.query(User).filter_by(id=1).first() #replace to g.id
+    caption = session.query(Caption).filter_by(id=id).first()
+    if caption:
+        user.favourite_captions.remove(caption)
+
+        session.add(user)
         session.commit()
-    return captions_schema.jsonify(caption)
+
+        return jsonify({"caption": caption.content, "user": user.username})
+    else:
+        return "This id is not exist"
 
 def edit_content_service(id):
     from ..model import Caption, captions_schema

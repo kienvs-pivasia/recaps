@@ -32,8 +32,8 @@ def register_user_service():
                     response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
                     if response.status_code == 200:
                         # Nếu đăng nhập thành công, chuyển hướng đến trang chính
-                        # return redirect(url_for('main_page'))
-                        return data
+                        return redirect(url_for('auth.index', _external=True))
+                        # return data
                     else:
                     #     # Nếu đăng nhập thất bại, trả về lỗi
                         return {'error': 'Đăng nhập thất bại'}
@@ -55,9 +55,12 @@ def login_user_service():
                 response = "Incorrect username or password"
             else:
                 try:
-                    access_token = create_access_token(identity=email)
+                    data = {'userid': user.id, 'email': email, 'password': password}
+                    access_token = create_access_token(identity=data)
                     response = make_response("Success")
                     set_access_cookies(response, access_token)
+
+                    return jsonify({'access_token': access_token}), 200
                     return response
                 except IndentationError:
                     response = "Cannot login"

@@ -29,7 +29,7 @@ class User(Base):
     # Quan hệ nhiều-nhiều với bảng Favourite
     favourite_captions = relationship('Caption', secondary='user_favourite_caption')
 
-# Định nghĩa bảng Image
+# Định nghĩa bảng Images
 class Image(Base):
     __tablename__ = 'images'
     id = Column(Integer, primary_key=True, autoincrement=True)
