@@ -36,7 +36,7 @@ I. Test trước khi login
         + Output:{"Caption": content, "tag_name": [], "tag_id": []}
 
     - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption
-        + Input: id
+        + Input: {"content":"abcd", "emotion": "True", "tag": "love"}
         + Output: {"caption": content, "user": username}
 
     - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption/<id>
