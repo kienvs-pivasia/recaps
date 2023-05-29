@@ -58,8 +58,9 @@ def get_all_captions_admin_service():
     return jsonify(results)
 
 def get_caption_favorite_service():
-    from ..model import captions_schema, Caption, Favourite
-    favorite = session.query(Caption).join(Favourite).filter(Caption.author_id == Favourite.user_id).all()
+    from ..model import captions_schema, Caption, Favourite, User
+    user = session.query(User).get(1) # replace to g.id
+    favorite_captions = user.favourite_captions
     results = captions_schema.dump(favorite)
     return jsonify(results)
 

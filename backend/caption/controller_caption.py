@@ -9,7 +9,6 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 caption_bp = Blueprint("caption", __name__, url_prefix="/caption")
 
 @caption_bp.route("/get_all_caption", methods=["GET"], endpoint='func1') #done
-# @jwt_required
 def get_all_caption():
     return get_all_captions_admin_service()
 
