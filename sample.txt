@@ -36,8 +36,8 @@ I. Test trước khi login
         + Output:{"Caption": content, "tag_name": [], "tag_id": []}
 
     - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption
-        + Input: {"content":"abcd", "emotion": "True", "tag": "love"}
-        + Output: {"caption": content, "user": username}
+        + Input: {"content":"abcd", "emotion": "True", "tag": ["love"]}
+        + Output: {'content':text, 'author_id':1, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': []}
 
     - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption/<id>
         + Input: id
