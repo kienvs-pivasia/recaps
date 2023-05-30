@@ -31,7 +31,6 @@ session = Session()
 
 def add_image_service():
     from ..model import Image
-    import cv2
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
     file = request.files['file']
@@ -61,29 +60,33 @@ def get_caption_favorite_service():
     from ..model import captions_schema, Caption, Favourite, User
     user = session.query(User).get(1) # replace to g.id
     favorite_captions = user.favourite_captions
-    results = captions_schema.dump(favorite)
+    results = captions_schema.dump(favorite_captions)
     return jsonify(results)
 
 def add_caption_service():
-    from ..model import Caption, captions_schema
-    content = request.json["content"]
+    from ..model import Caption, captions_schema, Tag
+    text = request.json["content"]
     emotion = request.json["emotion"]
-    tag = request.json['tag']
-    caption = session.query(Caption).filter(Caption.content == content).first()
+    tags = request.json["tag"]
+    caption = session.query(Caption).filter(Caption.content == text).first()
     if caption:
         raise "Caption already exits"
     else:
         newCaption = Caption(
-            id=1,
-            content=content,
+            content=text,
             emotion=emotion, 
             created_at=datetime.datetime.now(),
             author_id=1, # replace to g.id
-            tags=tag
         )
+        n_tag = list()
+        for tag in tags:
+            tag_qr = session.query(Tag).filter(Tag.name == tag).first()
+            if tag:
+                n_tag.append(tag_qr)
+        newCaption.tags = n_tag 
         session.add(newCaption)
         session.commit()
-    return captions_schema.jsonify(newCaption)
+    return {'content':text, 'author_id':1, 'created_at':datetime.datetime.now(), 'emotion':emotion}
 
 def delete_caption_service(id):
     from ..model import Caption, captions_schema
@@ -158,11 +161,9 @@ def get_list_caption_no_login_service():
         filelink = os.path.join('statics/Images/uploads', 'tmp.jpg')
         img.save(filelink)
         des = generate_caption_img(filelink)
-        print("a")
         translator = Translator()
         des = translator.translate(des, dest="vi").text
         list_cap = []
-        print("b")
         vector_des = sentence_embedding(des, ft_md)
         captions = session.query(Caption).filter(Caption.author_id == 1).all()
         for caption in captions:
