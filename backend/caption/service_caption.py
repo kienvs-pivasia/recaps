@@ -53,15 +53,21 @@ def add_image_service():
 def get_all_captions_admin_service():
     from ..model import Caption, captions_schema
     all_captions = session.query(Caption).filter(Caption.author_id == 1).all()
-    results = captions_schema.dump(all_captions)
-    return jsonify(results)
+    tmp = []
+    for caption in all_captions:
+        tags = caption.tags
+        tmp.append({'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+    return tmp
 
 def get_caption_favorite_service():
-    from ..model import captions_schema, Caption, Favourite, User
+    from ..model import User
     user = session.query(User).get(1) # replace to g.id
     favorite_captions = user.favourite_captions
-    results = captions_schema.dump(favorite_captions)
-    return jsonify(results)
+    tmp = []
+    for caption in favorite_captions:
+        tags = caption.tags
+        tmp.append({'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+    return tmp
 
 def add_caption_service():
     from ..model import Caption, captions_schema, Tag
@@ -216,7 +222,7 @@ def get_list_tag_service():
     captions = session.query(Caption).options(joinedload(Caption.tags)).join(caption_tag).join(Tag).all()
     output = {}
     for caption in captions:
-        output[caption.content] = caption.tag
+        output[caption.content] = [tag.name for tag in caption.tags]
     return jsonify(output)
 
 def get_tag_by_id_service(id):
