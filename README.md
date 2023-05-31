@@ -8,6 +8,9 @@ pip install -r requirements.txt
 mkdir statics
 cd statics
 mkdir Images
+cd Images
+mkdir uploads
+cd ../
 mkdir model
 cd ../
 python create_db.py

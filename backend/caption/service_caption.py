@@ -267,7 +267,7 @@ def remove_favorite_service(id):
 def edit_content_service(id):
     from ..model import Caption, captions_schema
     msg = None
-    caption = session.query(Caption).filter(Caption.id == id).fisrt()
+    caption = session.query(Caption).filter_by(id=id).first()
     new_content = request.json['content']
     if caption.author_id != 2: # replace to g.id
         msg = "This caption is not belong to you"
@@ -280,7 +280,7 @@ def edit_content_service(id):
 def edit_emotion_service(id):
     from ..model import Caption, captions_schema
     msg = None
-    caption = session.query(Caption).filter(Caption.id == id).fisrt()
+    caption = session.query(Caption).filter_by(id=id).first()
     new_emotion = request.json['emotion']
     if caption.author_id != 1: # replace to g.id
         msg = "This caption is not belong to you"
@@ -291,14 +291,14 @@ def edit_emotion_service(id):
     return captions_schema.jsonify(caption)
 
 def edit_tag_id_service(id):
-    from ..model import Caption, CaptionTag, captions_schema
+    from ..model import Caption, captions_schema, caption_tag
     msg = None
-    caption = session.query(Caption).filter(Caption.id == id).fisrt()
+    caption = session.query(Caption).filter_by(id = id).first()
     new_tag_id = request.json['tag_id']
     if caption.author_id != 1: #replace to g.id
         msg = "This caption is not belong to you"
         return msg
-    caption_tag = CaptionTag.query.filter(CaptionTag.caption_id == g.id).fisrt()
+    caption_tag = caption_tag.query.filter_by(caption_id = g.id).first()
     if new_tag_id == caption_tag.tag_id:
         msg = "Tag id is already exist"
         return msg
