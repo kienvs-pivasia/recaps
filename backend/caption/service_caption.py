@@ -42,7 +42,7 @@ def add_image_service():
         filename = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S") + '-' + file.filename
         filelink = os.path.join('statics/Images/uploads', filename)
         file.save(filelink)
-        user_id = 1 # replace to g.id
+        user_id = g.user.id
         new_image = Image(url=str(filelink), user_id=user_id, upload_time=datetime.datetime.now())
         session.add(new_image)
         session.commit()
@@ -51,7 +51,7 @@ def add_image_service():
         return jsonify({'error': str(e)}), 500
     
 def get_all_captions_admin_service():
-    from ..model import Caption, captions_schema
+    from ..model import Caption
     all_captions = session.query(Caption).filter(Caption.author_id == 1).all()
     tmp = []
     for caption in all_captions:
@@ -61,7 +61,7 @@ def get_all_captions_admin_service():
 
 def get_caption_favorite_service():
     from ..model import User
-    user = session.query(User).get(1) # replace to g.id
+    user = session.query(User).get(g.user.id)
     favorite_captions = user.favourite_captions
     tmp = []
     for caption in favorite_captions:
@@ -82,7 +82,7 @@ def add_caption_service():
             content=text,
             emotion=emotion, 
             created_at=datetime.datetime.now(),
-            author_id=1, # replace to g.id
+            author_id=g.user.id,
         )
         n_tag = list()
         for tag in tags:
@@ -98,7 +98,7 @@ def delete_caption_service(id):
     from ..model import Caption, captions_schema
     msg = None
     caption = session.query(Caption).filter(Caption.id == id).first()
-    if caption.author_id != 1: #replace g.id
+    if caption.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
     else:
@@ -225,8 +225,9 @@ def get_list_tag_service():
         output[caption.content] = [tag.name for tag in caption.tags]
     return jsonify(output)
 
-def get_tag_by_id_service(id):
+def get_tag_by_id_service():
     from ..model import Tag, Caption
+    id = request.json['id']
     result = session.query(Caption.content, Tag.name, Tag.id).join(Caption.tags).filter(Caption.id == id).all()
     if result:
         return jsonify({"Caption": result[0][0], "tag_name": [tag[1] for tag in result], "tag_id": [tag[2] for tag in result]})
@@ -234,10 +235,10 @@ def get_tag_by_id_service(id):
         msg = "This id is not exist"
         return msg
 
-def add_favorite_service(id):
+def add_favorite_service():
     from ..model import User, Caption
-
-    user = session.query(User).filter_by(id=1).first() #replace to g.id
+    id = request.json['id']
+    user = session.query(User).filter_by(id=g.user.id).first()
     caption = session.query(Caption).filter_by(id=id).first()
     if caption:
         user.favourite_captions.append(caption)
@@ -249,10 +250,10 @@ def add_favorite_service(id):
     else:
         return "This id is not exist"
 
-def remove_favorite_service(id):
+def remove_favorite_service():
     from ..model import User, Caption
-
-    user = session.query(User).filter_by(id=1).first() #replace to g.id
+    id = request.json['id']
+    user = session.query(User).filter_by(id=g.user.id).first()
     caption = session.query(Caption).filter_by(id=id).first()
     if caption:
         user.favourite_captions.remove(caption)
@@ -264,12 +265,13 @@ def remove_favorite_service(id):
     else:
         return "This id is not exist"
 
-def edit_content_service(id):
+def edit_content_service():
     from ..model import Caption, captions_schema
     msg = None
+    id = request.json['id']
     caption = session.query(Caption).filter_by(id=id).first()
     new_content = request.json['content']
-    if caption.author_id != 2: # replace to g.id
+    if caption.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
     else:
@@ -277,28 +279,30 @@ def edit_content_service(id):
         session.commit()
     return captions_schema.jsonify(caption)
 
-def edit_emotion_service(id):
+def edit_emotion_service():
     from ..model import Caption, captions_schema
     msg = None
+    id = request.json['id']
     caption = session.query(Caption).filter_by(id=id).first()
     new_emotion = request.json['emotion']
-    if caption.author_id != 1: # replace to g.id
+    if caption.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
     else:
-        caption.content=new_emotion
+        caption.emotion=new_emotion
         session.commit()
     return captions_schema.jsonify(caption)
 
-def edit_tag_id_service(id):
+def edit_tag_id_service():
     from ..model import Caption, captions_schema, caption_tag
     msg = None
-    caption = session.query(Caption).filter_by(id = id).first()
+    id = request.json['id']
+    caption = session.query(Caption).filter_by(id=id).first()
     new_tag_id = request.json['tag_id']
-    if caption.author_id != 1: #replace to g.id
+    if caption.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
-    caption_tag = caption_tag.query.filter_by(caption_id = g.id).first()
+    caption_tag = caption_tag.query.filter_by(caption_id = g.user.id).first()
     if new_tag_id == caption_tag.tag_id:
         msg = "Tag id is already exist"
         return msg

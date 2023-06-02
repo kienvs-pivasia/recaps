@@ -61,7 +61,6 @@ def login_user_service():
                     set_access_cookies(response, access_token)
 
                     return jsonify({'access_token': access_token}), 200
-                    return response
                 except IndentationError:
                     response = "Cannot login"
 
