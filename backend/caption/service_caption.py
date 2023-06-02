@@ -277,7 +277,7 @@ def edit_content_service():
     else:
         caption.content=new_content
         session.commit()
-    return captions_schema.jsonify(caption)
+    return {'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': caption.tags}
 
 def edit_emotion_service():
     from ..model import Caption, captions_schema
@@ -291,7 +291,7 @@ def edit_emotion_service():
     else:
         caption.emotion=new_emotion
         session.commit()
-    return captions_schema.jsonify(caption)
+    return {'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': caption.tags}
 
 def edit_tag_id_service():
     from ..model import Caption, captions_schema, caption_tag
@@ -309,5 +309,5 @@ def edit_tag_id_service():
     else:
         caption_tag.tag_id=new_tag_id
         session.commit()
-    return captions_schema.jsonify(caption)
+    return {'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': caption.tags}
 
