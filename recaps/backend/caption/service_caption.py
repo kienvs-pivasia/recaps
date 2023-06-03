@@ -13,8 +13,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, joinedload
 import datetime
 
-from flask_jwt_extended import get_jwt_identity
-
 import fasttext
 import datetime
 from keras.models import load_model
@@ -25,7 +23,7 @@ emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
 # Tạo đối tượng session
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -52,11 +50,11 @@ def add_image_service():
     
 def get_all_captions_admin_service():
     from ..model import Caption
-    all_captions = session.query(Caption).filter(Caption.author_id == 1).all()
+    all_captions = session.query(Caption).all()
     tmp = []
     for caption in all_captions:
         tags = caption.tags
-        tmp.append({'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+        tmp.append({'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return tmp
 
 def get_caption_favorite_service():
@@ -70,7 +68,7 @@ def get_caption_favorite_service():
     return tmp
 
 def add_caption_service():
-    from ..model import Caption, captions_schema, Tag
+    from ..model import Caption, Tag
     text = request.json["content"]
     emotion = request.json["emotion"]
     tags = request.json["tag"]
@@ -204,7 +202,7 @@ def get_list_caption_login_service():
         des = generate_caption_img(filelink)
         list_cap = []
         vector_des = sentence_embedding(des, ft_md)
-        captions = session.query(Caption).all()
+        captions = session.query(Caption).filter(Caption.author_id == g.user.id).all()
         for caption in captions:
             dict = {"content":[], "similarity":[]}
             vector_cap = sentence_embedding(caption.content, ft_md)
@@ -225,6 +223,12 @@ def get_list_tag_service():
     for caption in captions:
         output[caption.content] = [tag.name for tag in caption.tags]
     return jsonify(output)
+
+def get_all_tag_service():
+    from ..model import Tag, tags_schema
+    tags = session.query(Tag).all()
+    return tags_schema.jsonify(tags)
+
 
 def get_tag_by_id_service():
     from ..model import Tag, Caption
