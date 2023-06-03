@@ -22,6 +22,7 @@ import { checkExistLocalStorage } from "@/helper/ultilities";
 import { addNewCaption } from "@/apis/captions.api";
 import { useRouter } from "next/router";
 import { toastError, toastSuccess } from "@/helper/toastMessage";
+import jwtDecode from "jwt-decode";
 
 interface InitStateTagSelected {
   value: number;
@@ -141,17 +142,19 @@ export default function Recommendation() {
   const idUser = useMemo(() => {
     const getUser: any =
       checkExistLocalStorage() && localStorage.getItem("user");
-    const user: any = JSON.parse(getUser);
-    return user?.user?.id;
+    if (!!getUser) {
+      const userInfo: any = jwtDecode(getUser);
+      return userInfo.sub.userid;
+    }
   }, []);
 
   const onSubmit = useCallback(
     async (values: any) => {
       const body: any = {
         content: values?.content?.trim(),
-        idUser: idUser,
-        trangThai: emotion,
-        idTag: listTagsSelected?.value,
+        // idUser: idUser,
+        emotion: emotion,
+        tag: listTagsSelected?.value,
       };
       await addNewCaption(body)
         .then(() => {
@@ -169,7 +172,9 @@ export default function Recommendation() {
 
   const handleChangeTags = useCallback(
     (values: any) => {
-      setListTagsSelected(values);
+      console.log("e", values);
+
+      // setListTagsSelected(values);
     },
     [listTagsSelected]
   );
@@ -222,7 +227,7 @@ export default function Recommendation() {
                 </div>
               </div>
               <Select
-                // isMulti
+                isMulti
                 name="colors"
                 options={tagOptions}
                 className={classes.selectInput}

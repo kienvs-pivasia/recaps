@@ -2,7 +2,6 @@
 
 ## How to run:
 ```
-git clone https://github.com/kienvs-pivasia/recaps.git
 cd recaps/
 pip install -r requirements.txt
 mkdir statics

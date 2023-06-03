@@ -42,10 +42,11 @@ export default function Login() {
       password: values.passWord,
     })
       .then((res) => {
+        console.log("res", res);
         toastSuccess("Login Successfully");
-        authorizedRequest.setToken(res?.data);
-        localStorage.setItem("user", res?.data);
-        // router.push("/account");
+        authorizedRequest.setToken(res?.access_token);
+        localStorage.setItem("user", res?.access_token);
+        router.push("/account");
       })
       .catch((err) => toastError(err));
   }, []);
