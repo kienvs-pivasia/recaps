@@ -1,3 +1,4 @@
+import authorizedRequest from "@/config/authorizedRequest";
 import unauthorizedRequest from "@/config/unauthorizedRequest";
 
 interface NewCaptionBody {
@@ -17,11 +18,11 @@ interface NewCaptionBody {
   IDUser: string;
 }
 export function getListCaptions() {
-  return unauthorizedRequest.get(`/function/getListCaption`);
+  return unauthorizedRequest.get(`/caption/get_all_caption`);
 }
 
 export function addNewCaption(body: NewCaptionBody) {
-  return unauthorizedRequest.post(`/AddCaption/new`, body);
+  return authorizedRequest.post(`/caption/add_caption`, body);
 }
 
 export function updateCaption(params: any) {

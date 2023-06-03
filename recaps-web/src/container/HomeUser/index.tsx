@@ -14,22 +14,23 @@ import ItemCaption from "@/components/CaptionItem";
 import { getListTag } from "@/apis/listTag.api";
 import { useRouter } from "next/router";
 import { checkExistLocalStorage } from "@/helper/ultilities";
-import { ToastContainer, toast, Slide } from "react-toastify";
-import { Button } from "@mui/material";
 import { toastError, toastSuccess } from "@/helper/toastMessage";
+import jwtDecode from "jwt-decode";
 
 export default function HomeUser() {
   const [listData, setListData] = useState([]);
   const [listDataSearch, setListDataSearch] = useState([]);
   const [listTags, setListTags] = useState([]);
   const { query } = useRouter();
+
   const userInfo = useMemo(() => {
     const data: any = checkExistLocalStorage() && localStorage.getItem("user");
     if (!!data) {
-      return JSON.parse(data)?.user;
+      const decode: any = jwtDecode(data);
+      return decode?.sub;
     }
-    return "";
   }, []);
+  console.log("123", userInfo);
 
   const handleDelete = useCallback(async (item: any) => {
     await deleteCaption(item?.id_caption)
@@ -61,7 +62,7 @@ export default function HomeUser() {
     await getListCaptions()
       .then((data: any) => {
         const captionByIdUser = data.table.filter(
-          (item: any) => item.id_user === userInfo.id
+          (item: any) => item.id_user === userInfo?.id
         );
         setListData(captionByIdUser.reverse());
       })
@@ -85,7 +86,7 @@ export default function HomeUser() {
     await getListCaptions()
       .then((data: any) => {
         const captionByIdUser = data.table.filter(
-          (item: any) => item.id_user === userInfo.id
+          (item: any) => item.id_user === userInfo?.id
         );
         setListData(captionByIdUser.reverse());
       })
@@ -96,12 +97,13 @@ export default function HomeUser() {
     const fetchData = async () => {
       await getListCaptions()
         .then((data: any) => {
-          const captionByIdUser = data.table.filter(
-            (item: any) => item.id_user === userInfo.id
-          );
-          setListData(captionByIdUser?.reverse());
+          // const captionByIdUser = data.table.filter(
+          //   (item: any) => item.id_user === userInfo.id
+          // );
+          // setListData(captionByIdUser?.reverse());
+          console.log(data);
         })
-        .catch((err: any) => console.log(err));
+        .catch((err: any) => toastError(err));
 
       const data = await getListTag();
       setListTags(data);
