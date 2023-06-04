@@ -44,7 +44,12 @@ export default function Step2({
           <Grid item xs={5}>
             <div style={{ position: "relative", height: 340 }}>
               <Image
-                src={path?.length > 0 ? path : urlImage}
+                src={
+                  path?.length > 0
+                    ? path
+                    : urlImage ||
+                      `https://vapa.vn/wp-content/uploads/2022/12/anh-mau-dep-001.jpg`
+                }
                 alt=""
                 className={classes.img}
                 fill

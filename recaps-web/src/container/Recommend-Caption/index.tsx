@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import classes from "./recommend-caption.module.scss";
 import Image from "next/image";
 import bg from "@/assets/img/test.svg";
@@ -13,9 +13,10 @@ import {
   getDes,
   getEmotion,
   getListCaptionForLogin,
-  // getListCaptionForNoLogin,
+  getListCaptionForNoLogin,
 } from "@/apis/recommend.api";
 import { toastError } from "@/helper/toastMessage";
+import CompleteStep from "./CompleteStep";
 
 export default function RecommendCaption() {
   const router = useRouter();
@@ -24,8 +25,10 @@ export default function RecommendCaption() {
   const [image, setImage] = useState<any>(null);
   const [imagePath, setImagePath] = useState<any>(null);
   const [description, setDesription] = useState("");
+  const [listDes, setListDes] = useState([]);
   const [emotion, setEmotion] = useState(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [seletedDes, setSelectedDes] = useState<any>(0);
+  const [clearState, setClearState] = useState<boolean>(false);
   const renderHeader = useMemo(() => {
     return (
       <div style={{ backgroundColor: "#d5b6ff" }}>
@@ -48,6 +51,16 @@ export default function RecommendCaption() {
     },
     [path, image]
   );
+
+  useEffect(() => {
+    if (clearState) {
+      // setImage(null);
+      // setPath(null);
+      setImagePath(null);
+      setSelectedDes(0);
+      setClearState(false);
+    }
+  }, [router, clearState]);
 
   const handleUploaded = useCallback(async (item: any) => {
     const formData = new FormData();
@@ -82,10 +95,28 @@ export default function RecommendCaption() {
     formData.append("file", item);
     if (router.pathname.includes("account")) {
       await getListCaptionForLogin(formData)
-        .then((res) => console.log("res", res))
+        .then((res) => {
+          setListDes(res.data);
+          router.replace({
+            query: {
+              step: "4",
+            },
+          });
+        })
         .catch((err) => toastError(err));
       return;
     }
+    await getListCaptionForNoLogin(formData)
+      .then((res) => {
+        setListDes(res.data);
+        router.replace({
+          query: {
+            step: "4",
+          },
+        });
+      })
+      .catch((err) => toastError(err));
+    return;
     // await getListCaptionForNoLogin(formData)
     //   .then((res) => console.log("res", res))
     //   .catch((err) => toastError(err));
@@ -94,6 +125,29 @@ export default function RecommendCaption() {
     //     step: "4",
     //   },
     // });
+  }, []);
+
+  const handleClickCompleted = useCallback(() => {
+    router.replace({
+      query: {
+        step: "completed",
+      },
+    });
+  }, []);
+
+  const handleChooseCaption = useCallback(
+    (item: any) => {
+      setSelectedDes(item);
+    },
+    [seletedDes]
+  );
+  const handleBack = useCallback(() => {
+    if (router.pathname.includes("account")) {
+      setClearState(true);
+      return router.push(`/account/recommend`);
+    }
+    setClearState(true);
+    return router.push(`/recommend`);
   }, []);
 
   const renderStep = useMemo(() => {
@@ -105,7 +159,6 @@ export default function RecommendCaption() {
             handleChange={handleChange}
             handleUploaded={handleUploaded}
             image={image}
-            loading={loading}
             path={path}
           />
         );
@@ -131,7 +184,25 @@ export default function RecommendCaption() {
         );
 
       case "4":
-        return <Step3 path={imagePath} />;
+        return (
+          <Step3
+            path={imagePath}
+            listDes={listDes}
+            handleClickCompleted={handleClickCompleted}
+            handleChooseCaption={handleChooseCaption}
+            seletedDes={seletedDes}
+          />
+        );
+
+      case "completed":
+        return (
+          <CompleteStep
+            seletedDes={seletedDes}
+            path={imagePath}
+            handleBack={handleBack}
+            listDes={listDes}
+          />
+        );
 
       default:
         return (
@@ -140,12 +211,21 @@ export default function RecommendCaption() {
             handleChange={handleChange}
             handleUploaded={handleUploaded}
             image={image}
-            loading={loading}
             path={path}
           />
         );
     }
-  }, [router, path, image, loading, handleChange, handleUploaded, urlImage]);
+  }, [
+    router,
+    path,
+    image,
+    handleChange,
+    handleUploaded,
+    urlImage,
+    seletedDes,
+    listDes,
+  ]);
+  console.log("123", listDes);
 
   return (
     <>

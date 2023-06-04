@@ -42,7 +42,8 @@ export default function Login() {
       password: values.passWord,
     })
       .then((res) => {
-        console.log("res", res);
+        console.log("123", res);
+
         toastSuccess("Login Successfully");
         authorizedRequest.setToken(res?.access_token);
         localStorage.setItem("user", res?.access_token);
