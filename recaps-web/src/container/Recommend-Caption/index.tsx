@@ -9,6 +9,13 @@ import Step3 from "./Step3";
 import { useRouter } from "next/router";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import storage from "@/config/firebase";
+import {
+  getDes,
+  getEmotion,
+  getListCaptionForLogin,
+  // getListCaptionForNoLogin,
+} from "@/apis/recommend.api";
+import { toastError } from "@/helper/toastMessage";
 
 export default function RecommendCaption() {
   const router = useRouter();
@@ -16,6 +23,8 @@ export default function RecommendCaption() {
   const [urlImage, setUrlImage] = useState("");
   const [image, setImage] = useState<any>(null);
   const [imagePath, setImagePath] = useState<any>(null);
+  const [description, setDesription] = useState("");
+  const [emotion, setEmotion] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
   const renderHeader = useMemo(() => {
     return (
@@ -34,26 +43,57 @@ export default function RecommendCaption() {
         setImagePath(URL?.createObjectURL(item[0]));
         setPath(item[0]?.name);
         setImage(item[0]);
+        localStorage.setItem("urlImage", URL?.createObjectURL(item[0]));
       }
     },
     [path, image]
   );
 
-  const handleUploaded = useCallback((item: any) => {
-    const imgRef = ref(storage, `/items/${path}`);
-    uploadBytes(imgRef, item).then((snapshot) => {
-      setLoading(true);
-      getDownloadURL(snapshot.ref).then((url: string) => {
-        localStorage.setItem("urlImage", url);
-        setUrlImage(url);
-        setLoading(false);
+  const handleUploaded = useCallback(async (item: any) => {
+    const formData = new FormData();
+    formData.append("file", item);
+    await getEmotion(formData)
+      .then((res: any) => {
+        setEmotion(res.data.emo);
         router.replace({
           query: {
             step: "2",
           },
         });
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleClick = useCallback(async (item: any) => {
+    const formData = new FormData();
+    formData.append("file", item);
+    await getDes(formData).then((res) => {
+      setDesription(res?.data?.des);
+      router.replace({
+        query: {
+          step: "3",
+        },
       });
     });
+  }, []);
+
+  const handleClickInStep3 = useCallback(async (item: any) => {
+    const formData = new FormData();
+    formData.append("file", item);
+    if (router.pathname.includes("account")) {
+      await getListCaptionForLogin(formData)
+        .then((res) => console.log("res", res))
+        .catch((err) => toastError(err));
+      return;
+    }
+    // await getListCaptionForNoLogin(formData)
+    //   .then((res) => console.log("res", res))
+    //   .catch((err) => toastError(err));
+    // router.replace({
+    //   query: {
+    //     step: "4",
+    //   },
+    // });
   }, []);
 
   const renderStep = useMemo(() => {
@@ -71,13 +111,27 @@ export default function RecommendCaption() {
         );
 
       case "2":
-        return <Step1 path={urlImage} />;
+        return (
+          <Step1
+            path={imagePath}
+            emotion={emotion}
+            handleClick={handleClick}
+            image={image}
+          />
+        );
 
       case "3":
-        return <Step2 path={urlImage} />;
+        return (
+          <Step2
+            path={imagePath}
+            description={description}
+            handleClick={handleClickInStep3}
+            image={image}
+          />
+        );
 
       case "4":
-        return <Step3 path={urlImage} />;
+        return <Step3 path={imagePath} />;
 
       default:
         return (
