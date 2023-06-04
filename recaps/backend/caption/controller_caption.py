@@ -10,6 +10,7 @@ caption_bp = Blueprint("caption", __name__, url_prefix="/caption")
 
 def _build_cors_preflight_response():
     response = make_response()
+    # print("a")
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
     response.headers.add("Access-Control-Allow-Methods", "*")
@@ -18,6 +19,7 @@ def _build_cors_preflight_response():
 @caption_bp.route("/get_all_caption", methods=["GET", "OPTIONS"], endpoint='func1') #done
 @jwt_required(optional=True)
 def get_all_caption():
+    # print(request)
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
     elif request.method == 'GET':

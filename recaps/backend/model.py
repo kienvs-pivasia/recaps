@@ -66,7 +66,7 @@ class Tag(Base):
     name = Column(String(255), nullable=False)
 
     # Quan hệ nhiều-nhiều với bảng Caption
-    captions = relationship('Caption', secondary='caption_tag')
+    captions = relationship('Caption', secondary='caption_tag', overlaps="tags")
 
 # Định nghĩa bảng Favourite
 class Favourite(Base):
