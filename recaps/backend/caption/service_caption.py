@@ -23,7 +23,7 @@ emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
 # Tạo đối tượng session
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 Session = sessionmaker(bind=engine)
 session = Session()
 
