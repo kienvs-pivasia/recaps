@@ -4,13 +4,16 @@ from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
     unset_jwt_cookies,
-    JWTManager
+    JWTManager,
+    get_jwt_identity,
+    verify_jwt_in_request
 )
 import requests
 import json
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 Session = sessionmaker(bind=engine)
 session = Session()
@@ -36,13 +39,7 @@ def register_user_service():
                     headers = {'Content-Type': 'application/json'}
                     response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
                     if response.status_code == 200:
-                        print("a")
-                        # Nếu đăng nhập thành công, chuyển hướng đến trang chính
-                        # redirect(url_for('auth.index', _external=True))
-                        # response = jsonify({'message': 'User registered successfully'})
-                        # response.status_code = 200
                         return redirect(url_for('auth.index', _external=True))
-                        # return data
                     else:
                     #     # Nếu đăng nhập thất bại, trả về lỗi
                         response = jsonify({'message': 'User registered successfully'})
@@ -72,7 +69,7 @@ def login_user_service():
                     access_token = create_access_token(identity=data)
                     response = make_response("Success")
                     set_access_cookies(response, access_token)
-                    print(access_token)
+                    # g.user = session.query(User).filter_by(email=email).one()
                     return jsonify({'access_token': access_token}), 200
                 except IndentationError:
                     response = "Cannot login"
