@@ -69,7 +69,7 @@ def login_user_service():
                     access_token = create_access_token(identity=data)
                     response = make_response("Success")
                     set_access_cookies(response, access_token)
-                    # g.user = session.query(User).filter_by(email=email).one()
+                    g.user = session.query(User).filter_by(email=email).one()
                     return jsonify({'access_token': access_token}), 200
                 except IndentationError:
                     response = "Cannot login"

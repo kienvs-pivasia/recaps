@@ -15,7 +15,7 @@ def _build_cors_preflight_response():
     response.headers.add("Access-Control-Allow-Methods", "*")
     return response
 
-@caption_bp.route("/get_all_caption", methods=["GET"], endpoint='func1') #done
+@caption_bp.route("/get_all_caption", methods=["GET", "OPTIONS"], endpoint='func1') #done
 @jwt_required(optional=True)
 def get_all_caption():
     if request.method == 'OPTIONS':
@@ -23,7 +23,7 @@ def get_all_caption():
     elif request.method == 'GET':
         return get_all_captions_admin_service()
 
-@caption_bp.route("/add_image", methods=["POST"], endpoint='func2') #done
+@caption_bp.route("/add_image", methods=["POST", "OPTIONS"], endpoint='func2') #done
 @jwt_required(optional=True)
 def add_image():
     if request.method == 'OPTIONS':
@@ -31,7 +31,7 @@ def add_image():
     elif request.method == 'POST':
         return add_image_service()
 
-@caption_bp.route("/get_caption_favorite", methods=["GET"], endpoint='func3') #done
+@caption_bp.route("/get_caption_favorite", methods=["GET", "OPTIONS"], endpoint='func3') #done
 @jwt_required(optional=True)
 def get_caption_favorite():
     if request.method == 'OPTIONS':
@@ -39,21 +39,21 @@ def get_caption_favorite():
     elif request.method == 'GET':
         return get_caption_favorite_service()
 
-@caption_bp.route("/get_des", methods=["POST"], endpoint='func4') #done
+@caption_bp.route("/get_des", methods=["POST", "OPTIONS"], endpoint='func4') #done
 def get_des():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
     elif request.method == 'POST':
         return get_des_service()
 
-@caption_bp.route("/get_emotion", methods=["POST"], endpoint='func5') #done
+@caption_bp.route("/get_emotion", methods=["POST", "OPTIONS"], endpoint='func5') #done
 def get_emotion():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
     elif request.method == 'POST':
         return get_emotion_service()
 
-@caption_bp.route("/get_list_caption_login", methods=["POST"], endpoint='func6') #done
+@caption_bp.route("/get_list_caption_login", methods=["POST", "OPTIONS"], endpoint='func6') #done
 @jwt_required(optional=True)
 def get_list_caption_login():
     if request.method == 'OPTIONS':
@@ -61,14 +61,14 @@ def get_list_caption_login():
     elif request.method == 'POST':
         return get_list_caption_login_service()
 
-@caption_bp.route("/get_list_caption_no_login", methods=["POST"], endpoint='func7') #done
+@caption_bp.route("/get_list_caption_no_login", methods=["POST", "OPTIONS"], endpoint='func7') #done
 def get_list_caption_no_login():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
     elif request.method == 'POST':
         return get_list_caption_no_login_service()
 
-@caption_bp.route("/get_list_tag", methods=["GET"], endpoint='func8') #done
+@caption_bp.route("/get_list_tag", methods=["GET", "OPTIONS"], endpoint='func8') #done
 @jwt_required(optional=True)
 def get_list_tag():
     if request.method == 'OPTIONS':
@@ -76,7 +76,7 @@ def get_list_tag():
     elif request.method == 'GET':
         return get_list_tag_service()
 
-@caption_bp.route("/get_tag_by_id/", methods=["GET"], endpoint='func9') #done
+@caption_bp.route("/get_tag_by_id/", methods=["GET", "OPTIONS"], endpoint='func9') #done
 @jwt_required(optional=True)
 def get_tag_by_id():
     if request.method == 'OPTIONS':
@@ -84,7 +84,7 @@ def get_tag_by_id():
     elif request.method == 'GET':
         return get_tag_by_id_service()
 
-@caption_bp.route("/get_all_tag", methods=["GET"], endpoint='func10') #done
+@caption_bp.route("/get_all_tag", methods=["GET", "OPTIONS"], endpoint='func10') #done
 @jwt_required(optional=True)
 def get_all_tag():
     if request.method == 'OPTIONS':
@@ -92,7 +92,7 @@ def get_all_tag():
     elif request.method == 'GET':
         return get_all_tag_service()
 
-@caption_bp.route("/add_caption", methods=["POST"], endpoint='func11') #done
+@caption_bp.route("/add_caption", methods=["POST", "OPTIONS"], endpoint='func11') #done
 @jwt_required(optional=True)
 def add_caption():
     if request.method == 'OPTIONS':
@@ -100,7 +100,7 @@ def add_caption():
     elif request.method == 'POST':
         return add_caption_service()
 
-@caption_bp.route("/delete_caption", methods=["POST"], endpoint='func12') #done
+@caption_bp.route("/delete_caption", methods=["POST", "OPTIONS"], endpoint='func12') #done
 @jwt_required(optional=True)
 def delate_caption():
     if request.method == 'OPTIONS':
@@ -108,7 +108,7 @@ def delate_caption():
     elif request.method == 'POST':
         return delete_caption_service()
 
-@caption_bp.route("/add_favorite", methods=["POST"], endpoint='func13') #done
+@caption_bp.route("/add_favorite", methods=["POST", "OPTIONS"], endpoint='func13') #done
 @jwt_required(optional=True)
 def add_favorite():
     if request.method == 'OPTIONS':
@@ -116,7 +116,7 @@ def add_favorite():
     elif request.method == 'POST':
         return add_favorite_service()
 
-@caption_bp.route("/remove_favorite", methods=["POST"], endpoint='func14')
+@caption_bp.route("/remove_favorite", methods=["POST", "OPTIONS"], endpoint='func14')
 @jwt_required(optional=True)
 def remove_favorite():
     if request.method == 'OPTIONS':
@@ -124,7 +124,7 @@ def remove_favorite():
     elif request.method == 'POST':
         return remove_favorite_service()
 
-@caption_bp.route("/edit_content", methods=["PUT"], endpoint='func15')  #done
+@caption_bp.route("/edit_content", methods=["PUT", "OPTIONS"], endpoint='func15')  #done
 @jwt_required(optional=True)
 def edit_content():
     if request.method == 'OPTIONS':
@@ -132,7 +132,7 @@ def edit_content():
     elif request.method == 'PUT':
         return edit_content_service()
 
-@caption_bp.route("/edit_emotion", methods=["PUT"], endpoint='func16') #done
+@caption_bp.route("/edit_emotion", methods=["PUT", "OPTIONS"], endpoint='func16') #done
 @jwt_required(optional=True)
 def edit_emotion():
     if request.method == 'OPTIONS':
@@ -140,7 +140,7 @@ def edit_emotion():
     elif request.method == 'PUT':
         return edit_emotion_service()
 
-@caption_bp.route("/edit_tag_id", methods=["PUT"], endpoint='func17') #done
+@caption_bp.route("/edit_tag_id", methods=["PUT", "OPTIONS"], endpoint='func17') #done
 @jwt_required(optional=True)
 def edit_tag_id():
     if request.method == 'OPTIONS':

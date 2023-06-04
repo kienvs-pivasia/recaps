@@ -172,13 +172,14 @@ def get_list_caption_no_login_service():
         vector_des = sentence_embedding(des, ft_md)
         captions = session.query(Caption).filter(Caption.author_id == 1).all()
         for caption in captions:
-            dict = {"content":[], "similarity":[]}
+            dict = {"content":[], "similarity":[], "tag": []}
             vector_cap = sentence_embedding(caption.content, ft_md)
             similarity = cosine_similarity([vector_des], [vector_cap])[0][0]
             similarity = round(similarity*100, 2)
             if 50 <= similarity <= 100:
                 dict["content"].append(caption.content)
                 dict["similarity"].append(similarity)
+                dict["tag"].append(caption.tags)
                 list_cap.append(dict)
         return cap_list_schema.jsonify(list_cap)
     except Exception as e:

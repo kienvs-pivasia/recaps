@@ -11,7 +11,7 @@ from flask_jwt_extended import(
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-@bp.before_app_request
+# @bp.before_app_request
 @jwt_required(optional=True)
 def load_logged_in_user():
     from .model import User
