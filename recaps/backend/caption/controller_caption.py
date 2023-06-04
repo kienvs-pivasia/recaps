@@ -58,14 +58,14 @@ def get_emotion():
 def get_list_caption_login():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'GET':
+    elif request.method == 'POST':
         return get_list_caption_login_service()
 
 @caption_bp.route("/get_list_caption_no_login", methods=["POST"], endpoint='func7') #done
 def get_list_caption_no_login():
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'GET':
+    elif request.method == 'POST':
         return get_list_caption_no_login_service()
 
 @caption_bp.route("/get_list_tag", methods=["GET"], endpoint='func8') #done
