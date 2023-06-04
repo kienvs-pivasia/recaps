@@ -39,6 +39,6 @@ def load_logged_in_user():
 @bp.route("/")
 @bp.route("/index")
 def index():
-    response = requests.get('http://localhost:3000') # vi chu khong chay FE 
+    response = requests.get('http://localhost:3000')  
     return render_template_string(response.content)
     # return render_template("front-end/src/pages/index.tsx")

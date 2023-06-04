@@ -73,6 +73,7 @@ export default function ItemCaption(props: Props) {
       return listTags.find((i: any) => i.idTag === item.id_tag);
     }
   }, [item, listTags]);
+  console.log(item);
 
   const renderCaptions = useMemo(() => {
     return (
@@ -88,13 +89,13 @@ export default function ItemCaption(props: Props) {
               <div className={classes.descriptionItem}>{item?.content}</div>
               <div className={classes.listItem}>
                 <div className={classes.listTagItem}>
-                  <div className={classes.itemTagInList}>
-                    {!!item?.id_tag ? findTag?.name : "Vui"}
-                  </div>
+                  {item?.tag?.map((it: any) => (
+                    <div className={classes.itemTagInList}>{it || ""}</div>
+                  ))}
                 </div>
                 <div className={classes.itemDescription}>
                   <div className={classes.itemDay}>
-                    {moment(item?.createDate).startOf("day").fromNow()}
+                    {moment(item?.created_at).startOf("day").fromNow()}
                   </div>
                 </div>
               </div>
@@ -102,7 +103,7 @@ export default function ItemCaption(props: Props) {
           </div>
           <div className={classes.action}>
             <Image
-              src={item?.trang_thai ? icSmile : icSad}
+              src={item?.emotion === "True" ? icSmile : icSad}
               alt=""
               width={24}
               height={24}

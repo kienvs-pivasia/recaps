@@ -21,15 +21,15 @@ export default function ModalEdit({
   handleUpdate,
   listTag,
 }: Props) {
-  const [emotion, setEmotion] = useState<boolean>(true);
+  const [emotion, setEmotion] = useState<string>("True");
   const [content, setContent] = useState<string>("");
-  const [tag, setTag] = useState<number>(0);
+  const [tag, setTag] = useState<any>(null);
 
   useEffect(() => {
     if (item) {
       setContent(item?.content);
-      setEmotion(item?.trang_thai);
-      setTag(item?.id_tag);
+      setEmotion(item?.emotion);
+      setTag(item?.tag);
     }
   }, [item]);
 
@@ -57,7 +57,7 @@ export default function ModalEdit({
     if (listTag) {
       return listTag?.map((item: any) => {
         return {
-          value: item?.idTag,
+          value: item?.id,
           label: item?.name,
         };
       });
@@ -66,13 +66,19 @@ export default function ModalEdit({
 
   const defaultValueTag = useMemo(() => {
     if (item && tagOptions) {
-      return tagOptions.find((item: any) => item.value === tag);
+      return tagOptions.filter((item: any) =>
+        tag?.map((it: any) => it === item.name)
+      );
     }
   }, [tagOptions, item, tag]);
 
   const handleChangeEmotion = useCallback(
     (e: any) => {
-      setEmotion(e);
+      console.log("a", e);
+      if (e) {
+        return setEmotion("True");
+      }
+      return setEmotion("False");
     },
     [emotion]
   );
@@ -99,7 +105,7 @@ export default function ModalEdit({
           <div className={classes.item}>
             <div className={classes.titleItem}>Tags</div>
             <Select
-              // isMulti
+              isMulti
               name="colors"
               options={tagOptions}
               className={classes.selectInput}
@@ -115,7 +121,7 @@ export default function ModalEdit({
               control={
                 <MaterialUISwitch
                   sx={{ ml: 5 }}
-                  defaultChecked={item?.trang_thai}
+                  defaultChecked={item?.emotion === "True" ? true : false}
                   onChange={(e) => handleChangeEmotion(e.target.checked)}
                 />
               }
@@ -130,7 +136,7 @@ export default function ModalEdit({
               handleUpdate({ content, tag, emotion, item });
               setTimeout(() => {
                 handleClose();
-              }, 1500);
+              }, 2000);
             }}
           >
             Save

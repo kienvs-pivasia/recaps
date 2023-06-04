@@ -28,7 +28,7 @@ export default class Request {
     const request = this.api
       .get(url, apiConfig)
       .then((res) => {
-        return res.data?.data;
+        return res.data;
       })
       .catch((err) => console.log());
     return request;

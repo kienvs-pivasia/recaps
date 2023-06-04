@@ -19,20 +19,26 @@ export function getEmotion(body: any) {
 
 export function getListCaptionForLogin(body: any) {
   const token = checkExistLocalStorage() && localStorage.getItem("user");
-  return axios.get(`http://127.0.0.1:5000/caption/get_list_caption_login`, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    },
-    data: body,
-    params: body,
-  });
+  return axios.post(
+    `http://127.0.0.1:5000/caption/get_list_caption_login`,
+    body,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 }
 
-// export function getListCaptionForNoLogin(body: any){
-//     return axios.get(`http://127.0.0.1:5000/caption/get_list_caption_no_login`, body, {
-//         headers: {
-//             'Content-Type': 'multipart/form-data',
-//           }
-//     })
-// }
+export function getListCaptionForNoLogin(body: any) {
+  return axios.post(
+    `http://127.0.0.1:5000/caption/get_list_caption_no_login`,
+    body,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+}
