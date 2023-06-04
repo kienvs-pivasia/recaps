@@ -134,9 +134,9 @@ export default function ModalEdit({
             className={classes.btnSave}
             onClick={() => {
               handleUpdate({ content, tag, emotion, item });
-              setTimeout(() => {
-                handleClose();
-              }, 2000);
+              // setTimeout(() => {
+              //   handleClose();
+              // }, 2000);
             }}
           >
             Save

@@ -19,7 +19,7 @@ I. Test trước khi login
         + Input: file Image
         + Output: {"emo": emotion}
 
-    - get_list_caption_login: Method GET, 127.0.0.1:5000/caption/get_list_caption_login @jwt_required #done...
+    - get_list_caption_login: Method POST, 127.0.0.1:5000/caption/get_list_caption_login @jwt_required #done... error
         + Input: file Image
         + Output: ('content', 'similarity')
 
@@ -35,31 +35,31 @@ I. Test trước khi login
         + Input: {"id": id}
         + Output:{"Caption": content, "tag_name": [], "tag_id": []}
 
-    - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption @jwt_required #done .....
+    - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption @jwt_required #done ..... error
         + Input: {"content":"abcd", "emotion": "True", "tag": ["love"]}
         + Output: {'content':text, 'author_id':1, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': []}
 
-    - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption @jwt_required #not done
+    - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption @jwt_required #done ...... error
         + Input: {"id": id}
         + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 
-    - add_favorite: Method POST, 127.0.0.1:5000/caption/add_favorite @jwt_required #done ........
+    - add_favorite: Method POST, 127.0.0.1:5000/caption/add_favorite @jwt_required #done ........ error
         + Input: {"id": id}
         + Output: {"caption": content, "user": username}
 
-    - remove_favorite: Method POST, 127.0.0.1:5000/caption/remove_favorite @jwt_required #done ......
+    - remove_favorite: Method POST, 127.0.0.1:5000/caption/remove_favorite @jwt_required #done ...... loading....
         + Input: {"id": id}
         + Output: {"caption": content, "user": username}
 
-    - edit_content: Method PUT, 127.0.0.1:5000/caption/edit_content @jwt_required # done ........
+    - edit_content: Method PUT, 127.0.0.1:5000/caption/edit_content @jwt_required # done ........ error
         + Input: {"id": id, "content": content}
         + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 
-    - edit_emotion: Method PUT, 127.0.0.1:5000/caption/edit_emotion @jwt_required # done .......
+    - edit_emotion: Method PUT, 127.0.0.1:5000/caption/edit_emotion @jwt_required # done ....... error
         + Input: {"id": id, "emotion": emotion}
         + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 
-    - edit_tag_id: Method PUT, 127.0.0.1:5000/caption/edit_tag_id @jwt_required # done .....
+    - edit_tag_id: Method PUT, 127.0.0.1:5000/caption/edit_tag_id @jwt_required # done ..... error
         + Input: {"id": id, "tag_id": tag_id}
         + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 

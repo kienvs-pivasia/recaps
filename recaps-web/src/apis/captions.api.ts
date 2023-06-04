@@ -25,10 +25,22 @@ export function addNewCaption(body: NewCaptionBody) {
   return authorizedRequest.post(`/caption/add_caption`, body);
 }
 
-export function updateCaption(params: any) {
-  return unauthorizedRequest.put(`/UpdateCaption`, params);
+export function updateContentCaption(body: any) {
+  return unauthorizedRequest.post(`/UpdateCaption`, body);
 }
 
-export function deleteCaption(body: string) {
+export function updateEmotionCaption(body: any) {
+  return unauthorizedRequest.post(`/UpdateCaption`, body);
+}
+
+export function updateTagCaption(body: any) {
+  return unauthorizedRequest.post(`/UpdateCaption`, body);
+}
+
+export function deleteCaption(body: any) {
   return unauthorizedRequest.post(`caption/delete_caption`, body);
+}
+
+export function getListCaptionFavourite() {
+  return authorizedRequest.get(`/caption/get_caption_favorite`);
 }

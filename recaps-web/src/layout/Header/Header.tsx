@@ -74,7 +74,7 @@ export default function Header() {
               />
             </div>
             <div className={cx(classes.itemNoti, classes.name)}>
-              {userInfo?.user?.userName || "User Name"}
+              {userInfo?.sub?.email || "User Name"}
             </div>
             <div className={cx(classes.groupBtn, "ml-3")}>
               <Link href={"/login"}>

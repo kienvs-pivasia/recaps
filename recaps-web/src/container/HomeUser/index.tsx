@@ -8,7 +8,9 @@ import Tags from "./Tag";
 import {
   deleteCaption,
   getListCaptions,
-  updateCaption,
+  updateContentCaption,
+  updateEmotionCaption,
+  updateTagCaption,
 } from "@/apis/captions.api";
 import ItemCaption from "@/components/CaptionItem";
 import { getAllTag, getListTag } from "@/apis/listTag.api";
@@ -32,7 +34,9 @@ export default function HomeUser() {
   }, []);
 
   const handleDelete = useCallback(async (item: any) => {
-    await deleteCaption(item?.id_caption)
+    await deleteCaption({
+      id: item?.id,
+    })
       .then((res) => toastSuccess("Deleted Successfully"))
       .catch((err) => toastError(err));
 
@@ -55,7 +59,24 @@ export default function HomeUser() {
       idTag: item?.tag,
       favourite: item?.favourite,
     };
-    await updateCaption(payload)
+    console.log(item);
+
+    await updateContentCaption({
+      id: item.item.id,
+      content: item?.content,
+    })
+      .then((res) => toastSuccess("Update Successfully"))
+      .catch((err) => console.log(err));
+    await updateEmotionCaption({
+      id: item.item.id,
+      emotion: item?.emotion,
+    })
+      .then((res) => toastSuccess("Update Successfully"))
+      .catch((err) => console.log(err));
+    await updateTagCaption({
+      id: item.item.id,
+      content: item?.content,
+    })
       .then((res) => toastSuccess("Update Successfully"))
       .catch((err) => console.log(err));
     await getListCaptions()
@@ -78,9 +99,9 @@ export default function HomeUser() {
       favourite: !item?.favourite,
     };
 
-    await updateCaption(payload)
-      .then(() => toastSuccess("Change favourite success"))
-      .catch((err) => toastError(err));
+    // await updateCaption(payload)
+    //   .then(() => toastSuccess("Change favourite success"))
+    //   .catch((err) => toastError(err));
 
     await getListCaptions()
       .then((data: any) => {
