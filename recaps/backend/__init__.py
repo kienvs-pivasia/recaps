@@ -20,8 +20,6 @@ def create_app(config_file="config.py"):
 
     app.register_blueprint(bp)
 
-    # jwt = JWTManager(app)
-
     @jwt.user_identity_loader
 
     def user_identity_lookup(username):

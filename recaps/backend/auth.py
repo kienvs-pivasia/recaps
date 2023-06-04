@@ -8,16 +8,10 @@ from flask_jwt_extended import(
     jwt_required,
     verify_jwt_in_request
 )
-# from datetime import datetime, timezone, timedelta
-# from .model import User
-# from .model import engine
-
-#Session = sessionmaker(bind=engine)
-#Session.configure(bind=engine)
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-# @bp.before_app_request
+@bp.before_app_request
 @jwt_required(optional=True)
 def load_logged_in_user():
     from .model import User
@@ -27,13 +21,13 @@ def load_logged_in_user():
     Session = sessionmaker(bind=engine)
     Session.configure(bind=engine)
 
-    g.dbsession = Session()
-    verify_jwt_in_request()
+    session = Session()
     current_identity = get_jwt_identity()
+    global g
     if current_identity is None:
         g.user = None
     else:
-        g.user = g.dbsession.query(User).filter_by(email=current_identity['email']).one()
+        g.user = session.query(User).filter_by(email=current_identity['email']).one()
 
 
 @bp.route("/")

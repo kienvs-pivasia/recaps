@@ -90,7 +90,7 @@ def add_caption_service():
         newCaption.tags = n_tag 
         session.add(newCaption)
         session.commit()
-    return {'content':text, 'author_id':1, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
+    return {'content':text, 'author_id':g.user.id, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
 
 def delete_caption_service():
     from ..model import Caption, captions_schema
