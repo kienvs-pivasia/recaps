@@ -29,6 +29,6 @@ export function updateCaption(params: any) {
   return unauthorizedRequest.put(`/UpdateCaption`, params);
 }
 
-export function deleteCaption(params: string) {
-  return unauthorizedRequest.delete(`/removeCaption?idCaption=${params}`);
+export function deleteCaption(body: string) {
+  return unauthorizedRequest.post(`caption/delete_caption`, body);
 }

@@ -16,13 +16,13 @@ import { toastError, toastSuccess } from "@/helper/toastMessage";
 
 export default function Login() {
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .required("Email is required")
-      .matches(
-        /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
-        "Email is not vaild"
-      ),
+    // email: yup
+    //   .string()
+    //   .required("Email is required")
+    //   .matches(
+    //     /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+    //     "Email is not vaild"
+    //   ),
     passWord: yup
       .string()
       .required("Password is required")

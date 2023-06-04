@@ -11,7 +11,7 @@ import {
   updateCaption,
 } from "@/apis/captions.api";
 import ItemCaption from "@/components/CaptionItem";
-import { getListTag } from "@/apis/listTag.api";
+import { getAllTag, getListTag } from "@/apis/listTag.api";
 import { useRouter } from "next/router";
 import { checkExistLocalStorage } from "@/helper/ultilities";
 import { toastError, toastSuccess } from "@/helper/toastMessage";
@@ -30,7 +30,6 @@ export default function HomeUser() {
       return decode?.sub;
     }
   }, []);
-  console.log("123", userInfo);
 
   const handleDelete = useCallback(async (item: any) => {
     await deleteCaption(item?.id_caption)
@@ -39,8 +38,8 @@ export default function HomeUser() {
 
     await getListCaptions()
       .then((data: any) => {
-        const captionByIdUser = data.table.filter(
-          (item: any) => item.id_user === userInfo.id
+        const captionByIdUser = data.filter(
+          (item: any) => item.author_id === userInfo.userid
         );
         setListData(captionByIdUser.reverse());
       })
@@ -61,8 +60,8 @@ export default function HomeUser() {
       .catch((err) => console.log(err));
     await getListCaptions()
       .then((data: any) => {
-        const captionByIdUser = data.table.filter(
-          (item: any) => item.id_user === userInfo?.id
+        const captionByIdUser = data.filter(
+          (item: any) => item.author_id === userInfo.userid
         );
         setListData(captionByIdUser.reverse());
       })
@@ -86,7 +85,7 @@ export default function HomeUser() {
     await getListCaptions()
       .then((data: any) => {
         const captionByIdUser = data.table.filter(
-          (item: any) => item.id_user === userInfo?.id
+          (item: any) => item.id_user === userInfo?.userid
         );
         setListData(captionByIdUser.reverse());
       })
@@ -97,15 +96,14 @@ export default function HomeUser() {
     const fetchData = async () => {
       await getListCaptions()
         .then((data: any) => {
-          // const captionByIdUser = data.table.filter(
-          //   (item: any) => item.id_user === userInfo.id
-          // );
-          // setListData(captionByIdUser?.reverse());
-          console.log(data);
+          const captionByIdUser = data.filter(
+            (item: any) => item.author_id === userInfo.userid
+          );
+          setListData(captionByIdUser?.reverse());
         })
         .catch((err: any) => toastError(err));
 
-      const data = await getListTag();
+      const data = await getAllTag();
       setListTags(data);
     };
     fetchData();
