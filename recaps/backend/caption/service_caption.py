@@ -54,7 +54,7 @@ def get_all_captions_admin_service():
     tmp = []
     for caption in all_captions:
         tags = caption.tags
-        tmp.append({'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+        tmp.append({'id':caption.id, 'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return tmp
 
 def get_caption_favorite_service():
@@ -93,7 +93,7 @@ def add_caption_service():
     return {'content':text, 'author_id':g.user.id, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
 
 def delete_caption_service():
-    from ..model import Caption, captions_schema
+    from ..model import Caption
     msg = None
     id = request.json['id']
     caption = session.query(Caption).filter(Caption.id == id).first()
@@ -103,7 +103,7 @@ def delete_caption_service():
     else:
         session.delete(caption)
         session.commit()
-    return captions_schema.jsonify(caption)
+    return jsonify({'Message': "Done"}), 200
 
 def get_des_service():
     import os
@@ -241,16 +241,21 @@ def get_tag_by_id_service():
         return msg
 
 def add_favorite_service():
-    from ..model import User, Caption
+    from ..model import User, Caption, Favourite
     id = request.json['id']
     user = session.query(User).filter_by(id=g.user.id).first()
     caption = session.query(Caption).filter_by(id=id).first()
     if caption:
         user.favourite_captions.append(caption)
-
         session.add(user)
         session.commit()
-
+        newFavourite = Favourite(
+            user_id=g.user.id,
+            caption_id=caption.content, 
+            status=True
+        )
+        session.add(newFavourite)
+        session.commit()
         return jsonify({"caption": caption.content, "user": user.username})
     else:
         return "This id is not exist"
