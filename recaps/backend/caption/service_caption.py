@@ -254,7 +254,7 @@ def add_favorite_service():
         session.commit()
         newFavourite = Favourite(
             user_id=g.user.id,
-            caption_id=caption.content, 
+            caption_id=caption.id, 
             status=True
         )
         session.add(newFavourite)
@@ -264,17 +264,15 @@ def add_favorite_service():
         return "This id is not exist"
 
 def remove_favorite_service():
-    from ..model import User, Caption
+    from ..model import User, Caption, user_favourite_caption
     id = request.json['id']
-    user = session.query(User).filter_by(id=g.user.id).first()
-    caption = session.query(Caption).filter_by(id=id).first()
+    # user = session.query(User).filter_by(id=g.user.id).first()
+    caption = session.query(user_favourite_caption).filter_by(caption_id=id).first()
     if caption:
-        user.favourite_captions.remove(caption)
-
-        session.add(user)
+        delete_statement = user_favourite_caption.delete().where(user_favourite_caption.user_id == g.user.id and user_favourite_caption.c.caption_id == id)
+        session.connection().execute(delete_statement)
         session.commit()
-
-        return jsonify({"caption": caption.content, "user": user.username})
+        return jsonify({"Message":"Done"}), 200
     else:
         return "This id is not exist"
 

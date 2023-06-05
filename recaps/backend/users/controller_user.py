@@ -29,7 +29,7 @@ def login_user():
     # print(request)
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    if request.method == 'POST':
+    elif request.method == 'POST':
         return login_user_service()
 
 @user_bp.route("/logout", methods=['GET'])

@@ -60,7 +60,7 @@ def login_user_service():
     email = request.json["email"]
     password = request.json["password"]
     response = None
-    print(email)
+    # print(email)
     if email and password:
         user = session.query(User).filter_by(email=email).first()
         if user is None or str(user.password) != str(password):
