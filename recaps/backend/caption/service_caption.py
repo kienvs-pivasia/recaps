@@ -9,7 +9,7 @@ import fasttext
 from sklearn.metrics.pairwise import cosine_similarity
 from googletrans import Translator
 # import requests
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import sessionmaker, joinedload
 import datetime
 
@@ -23,7 +23,7 @@ emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
 # Tạo đối tượng session
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 Session = sessionmaker(bind=engine)
@@ -95,16 +95,35 @@ def add_caption_service():
     return {'content':text, 'author_id':g.user.id, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
 
 def delete_caption_service():
-    from ..model import Caption
+    from ..model import Caption, Favourite, caption_tag, Tag
     msg = None
-    id = request.json['id']
-    caption = session.query(Caption).filter(Caption.id == id).first()
-    if caption.author_id != g.user.id:
+    caption_id = request.json['id']
+    # caption = session.query(Caption).filter_by(id == id).first()
+    # if caption.author_id != g.user.id:
+    #     msg = "This caption is not belong to you"
+    #     return msg
+    # else:
+    #     session.delete(caption)
+    #     session.commit()
+    caption_to_delete = session.query(Caption).filter(Caption.id == caption_id).one()
+    if caption_to_delete.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
-    else:
-        session.delete(caption)
-        session.commit()
+    # Xóa caption khỏi bảng favourites
+    favourites_to_delete = session.query(Favourite).filter(Favourite.caption_id == caption_id).all()
+    for favourite in favourites_to_delete:
+        session.delete(favourite)
+
+    # Xóa các bản ghi trong bảng trung gian caption_tag
+    tags_to_delete = session.query(Tag).join(caption_tag).filter(caption_tag.c.caption_id == caption_id).all()
+    for tag in tags_to_delete:
+        caption_to_delete.tags.remove(tag)
+
+    # Xóa caption
+    session.delete(caption_to_delete)
+
+    # Lưu các thay đổi vào cơ sở dữ liệu
+    session.commit()
     return jsonify({'Message': "Done"}), 200
 
 def get_des_service():
@@ -269,7 +288,7 @@ def remove_favorite_service():
     # user = session.query(User).filter_by(id=g.user.id).first()
     caption = session.query(user_favourite_caption).filter_by(caption_id=id).first()
     if caption:
-        delete_statement = user_favourite_caption.delete().where(user_favourite_caption.user_id == g.user.id and user_favourite_caption.c.caption_id == id)
+        delete_statement = user_favourite_caption.delete().where(and_(user_favourite_caption.c.user_id == g.user.id, user_favourite_caption.c.caption_id == id))
         session.connection().execute(delete_statement)
         session.commit()
         return jsonify({"Message":"Done"}), 200

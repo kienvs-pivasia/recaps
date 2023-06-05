@@ -4,7 +4,7 @@ import datetime
 from sqlalchemy.orm import relationship, sessionmaker
 from backend.db import ma
 
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 # Tạo một session để thao tác với database
