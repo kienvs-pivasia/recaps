@@ -1,0 +1,11 @@
+- api edit_tag_id: thì mình đang truyển 1 id thôi đúng k ạ (nếu sửa nhiều tag một lúc thì được không ạ, hoặc các caption có 2,3 tag mà muốn bỏ 1 hoặc 2 tag).
+
+- api delete_caption: nếu xoá caption mà đã thêm vào favorite thì sẽ lỗi hết toàn bộ luôn ạ
+
+- api get_list_caption_login: chưa trả id_Tag đính kèm caption đó, id caption được lưu trong favorite (do trong ui khi hiển thị thì các caption được thêm vào favorite sẽ được hiển thị dấu sao bên cạnh và ưu tiên đứng bên trên caption bình thường khi có số điểm similarity bằng nhau)
+Link figma: https://www.figma.com/file/0ZH6gnGWAM2csG8nq0bT99/recap?type=design&node-id=0-1&t=Ymh4sQcnz58Rszpe-0
+
+- api get_list_caption_no_login: chưa trả id_Tag đính kèm caption đó
+
+
+- lỗi cors ở mấy api cần jwt

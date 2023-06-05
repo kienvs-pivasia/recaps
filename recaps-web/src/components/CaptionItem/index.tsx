@@ -16,8 +16,6 @@ import icStar from "@/assets/img/icStar.svg";
 import icUnStar from "@/assets/img/icUnStar.svg";
 import icAction from "@/assets/img/icAction.svg";
 import Action from "@/container/HomeUser/Action";
-import { updateCaption } from "@/apis/captions.api";
-import { toastError, toastSuccess } from "@/helper/toastMessage";
 
 interface Props {
   item: any;
@@ -73,7 +71,6 @@ export default function ItemCaption(props: Props) {
       return listTags.find((i: any) => i.idTag === item.id_tag);
     }
   }, [item, listTags]);
-  console.log(item);
 
   const renderCaptions = useMemo(() => {
     return (
