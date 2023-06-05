@@ -7,14 +7,15 @@ export interface UserRequestBody {
   password: string;
 }
 export function doLogin(body: UserRequestBody) {
-  return unauthorizedRequest.post(`/user/login`, body);
-  // return axios.post(`http://127.0.0.1:5000/user/login`, body, {
-  //   headers: {
-  //     'Access-Control-Allow-Origin': '*',
-  //     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-  //     'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
-  //   }
-  // })
+  // return unauthorizedRequest.post(`/user/login_user`, body);
+  return axios.post(`http://127.0.0.1:5000/user/login_user`, body,
+    // {headers: {'content-type': 'application/json'}}
+    // headers: {
+    //   'Access-Control-Allow-Origin': '*',
+    //   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+    //   'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+    // }
+  )
 }
 
 export function signUp(body: any) {

@@ -17,18 +17,19 @@ def _build_cors_preflight_response():
 
 @user_bp.route("/register", methods=["POST", "OPTIONS"])
 def register_user():
-    from .service_user import register_user_service
+    from .service_user import register_user_service 
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
     elif request.method == 'POST':
         return register_user_service()
 
-@user_bp.route("/login", methods=["POST", "OPTIONS"])
+@user_bp.route("/login_user", methods=["POST", "OPTIONS"])
 def login_user():
     from .service_user import login_user_service
+    # print(request)
     if request.method == 'OPTIONS':
         return _build_cors_preflight_response()
-    elif request.method == 'POST':
+    if request.method == 'POST':
         return login_user_service()
 
 @user_bp.route("/logout", methods=['GET'])
