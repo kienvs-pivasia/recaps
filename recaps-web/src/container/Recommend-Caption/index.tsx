@@ -52,15 +52,15 @@ export default function RecommendCaption() {
     [path, image]
   );
 
-  useEffect(() => {
-    if (clearState) {
-      // setImage(null);
-      // setPath(null);
-      setImagePath(null);
-      setSelectedDes(0);
-      setClearState(false);
-    }
-  }, [router, clearState]);
+  // useEffect(() => {
+  //   if (clearState) {
+  //     // setImage(null);
+  //     // setPath(null);
+  //     setImagePath(null);
+  //     setSelectedDes(0);
+  //     setClearState(false);
+  //   }
+  // }, [router, clearState]);
 
   const handleUploaded = useCallback(async (item: any) => {
     const formData = new FormData();
@@ -143,11 +143,11 @@ export default function RecommendCaption() {
   );
   const handleBack = useCallback(() => {
     if (router.pathname.includes("account")) {
-      setClearState(true);
-      return router.push(`/account/recommend`);
+      // setClearState(true);
+      return router.push(`/account/`);
     }
-    setClearState(true);
-    return router.push(`/recommend`);
+    // setClearState(true);
+    return router.push(`/`);
   }, []);
 
   const renderStep = useMemo(() => {
@@ -225,7 +225,6 @@ export default function RecommendCaption() {
     seletedDes,
     listDes,
   ]);
-  console.log("123", listDes);
 
   return (
     <>

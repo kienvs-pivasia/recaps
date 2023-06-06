@@ -43,8 +43,8 @@ export default function Login() {
     })
       .then((res) => {
         toastSuccess("Login Successfully");
-        authorizedRequest.setToken(res?.data.access_token);
-        localStorage.setItem("user", res?.data.access_token);
+        // authorizedRequest.setToken(res.access_token);
+        localStorage.setItem("user", res.data.access_token);
         router.push("/account");
       })
       .catch((err) => toastError(err));

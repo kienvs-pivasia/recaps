@@ -24,12 +24,17 @@ export default function ModalEdit({
   const [emotion, setEmotion] = useState<string>("True");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<any>(null);
+  const [defaultTag, setDefaultTag] = useState(null);
 
   useEffect(() => {
     if (item) {
       setContent(item?.content);
       setEmotion(item?.emotion);
       setTag(item?.tag);
+      const tagInCaptions = tagOptions.filter((i: any) =>
+        item?.tag?.map((it: any) => it === i.name)
+      );
+      setDefaultTag(tagInCaptions);
     }
   }, [item]);
 
@@ -48,7 +53,8 @@ export default function ModalEdit({
   );
   const handleChangeTags = useCallback(
     (e: any) => {
-      setTag(e?.value);
+      const seletecdTagName = e?.map((item: any) => item?.label);
+      setTag(seletecdTagName);
     },
     [tag]
   );
@@ -74,7 +80,6 @@ export default function ModalEdit({
 
   const handleChangeEmotion = useCallback(
     (e: any) => {
-      console.log("a", e);
       if (e) {
         return setEmotion("True");
       }
@@ -83,8 +88,9 @@ export default function ModalEdit({
     [emotion]
   );
 
-  const renderModal = useMemo(() => {
-    return (
+  return (
+    <>
+      return (
       <Modal
         open={open}
         onClose={handleClose}
@@ -106,13 +112,12 @@ export default function ModalEdit({
             <div className={classes.titleItem}>Tags</div>
             <Select
               isMulti
-              name="colors"
               options={tagOptions}
               className={classes.selectInput}
-              value={defaultValueTag}
-              // defaultValue={defaultValueTag}
+              defaultValue={defaultTag}
               styles={customStyle}
               onChange={(e) => handleChangeTags(e)}
+              isClearable
             />
           </div>
           <div className={classes.emotion}>
@@ -150,8 +155,7 @@ export default function ModalEdit({
           </Button>
         </Card>
       </Modal>
-    );
-  }, [tag, defaultValueTag, item, content, emotion]);
-
-  return <>{renderModal}</>;
+      );
+    </>
+  );
 }

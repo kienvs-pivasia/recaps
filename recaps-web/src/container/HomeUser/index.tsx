@@ -6,6 +6,7 @@ import Link from "next/link";
 import Card from "@/components/Cards";
 import Tags from "./Tag";
 import {
+  addCaptionFavorite,
   deleteCaption,
   getListCaptions,
   updateContentCaption,
@@ -13,7 +14,7 @@ import {
   updateTagCaption,
 } from "@/apis/captions.api";
 import ItemCaption from "@/components/CaptionItem";
-import { getAllTag, getListTag } from "@/apis/listTag.api";
+import { getAllTag } from "@/apis/listTag.api";
 import { useRouter } from "next/router";
 import { checkExistLocalStorage } from "@/helper/ultilities";
 import { toastError, toastSuccess } from "@/helper/toastMessage";
@@ -37,7 +38,7 @@ export default function HomeUser() {
     await deleteCaption({
       id: item?.id,
     })
-      .then((res) => toastSuccess("Deleted Successfully"))
+      .then(() => toastSuccess("Deleted Successfully"))
       .catch((err) => toastError(err));
 
     await getListCaptions()
@@ -61,47 +62,41 @@ export default function HomeUser() {
     };
     console.log(item);
 
-    await updateContentCaption({
-      id: item.item.id,
-      content: item?.content,
-    })
-      .then((res) => toastSuccess("Update Successfully"))
-      .catch((err) => console.log(err));
-    await updateEmotionCaption({
-      id: item.item.id,
-      emotion: item?.emotion,
-    })
-      .then((res) => toastSuccess("Update Successfully"))
-      .catch((err) => console.log(err));
-    await updateTagCaption({
-      id: item.item.id,
-      content: item?.content,
-    })
-      .then((res) => toastSuccess("Update Successfully"))
-      .catch((err) => console.log(err));
-    await getListCaptions()
-      .then((data: any) => {
-        const captionByIdUser = data.filter(
-          (item: any) => item.author_id === userInfo.userid
-        );
-        setListData(captionByIdUser.reverse());
-      })
-      .catch((err: any) => console.log(err));
+    // await updateContentCaption({
+    //   id: item.item.id,
+    //   content: item?.content,
+    // })
+    //   .then((res) => toastSuccess("Update Successfully"))
+    //   .catch((err) => console.log(err));
+    // await updateEmotionCaption({
+    //   id: item.item.id,
+    //   emotion: item?.emotion,
+    // })
+    //   .then((res) => toastSuccess("Update Successfully"))
+    //   .catch((err) => console.log(err));
+    // await updateTagCaption({
+    //   id: item.item.id,
+    //   content: item?.content,
+    // })
+    //   .then((res) => toastSuccess("Update Successfully"))
+    //   .catch((err) => console.log(err));
+    // await getListCaptions()
+    //   .then((data: any) => {
+    //     const captionByIdUser = data.filter(
+    //       (item: any) => item.author_id === userInfo.userid
+    //     );
+    //     setListData(captionByIdUser.reverse());
+    //   })
+    //   .catch((err: any) => console.log(err));
   }, []);
 
   const handleChangeFavourite = useCallback(async (item: any) => {
-    const payload = {
-      content: item?.content,
-      idCaption: item?.id_caption,
-      idUser: item?.id_user,
-      trangThai: item?.trang_thai,
-      idTag: item?.id_tag,
-      favourite: !item?.favourite,
+    const body = {
+      id: item?.id,
     };
-
-    // await updateCaption(payload)
-    //   .then(() => toastSuccess("Change favourite success"))
-    //   .catch((err) => toastError(err));
+    await addCaptionFavorite(body)
+      .then(() => toastSuccess("Change favourite success"))
+      .catch((err) => toastError(err));
 
     await getListCaptions()
       .then((data: any) => {

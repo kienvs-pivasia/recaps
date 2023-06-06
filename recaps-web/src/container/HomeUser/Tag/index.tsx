@@ -24,7 +24,6 @@ export default function Tags() {
       .catch((err) => console.log(err));
     // getAllTag().then()
   }, [router]);
-  console.log("123", listTags);
 
   const handleSelectTag = useCallback(
     (item: any) => {
