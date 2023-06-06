@@ -66,7 +66,7 @@ def get_caption_favorite_service():
     tmp = []
     for caption in favorite_captions:
         tags = caption.tags
-        tmp.append({'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+        tmp.append({'id':caption.id,'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return tmp
 
 def add_caption_service():
