@@ -23,7 +23,7 @@ emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
 # Tạo đối tượng session
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 Session = sessionmaker(bind=engine)
@@ -95,7 +95,8 @@ def add_caption_service():
     return {'content':text, 'author_id':g.user.id, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
 
 def delete_caption_service():
-    from ..model import Caption, Favourite, caption_tag, Tag
+    from ..model import Caption, Favourite, caption_tag, Tag, user_favourite_caption, User
+    from sqlalchemy import delete
     msg = None
     caption_id = request.json['id']
     # caption = session.query(Caption).filter_by(id == id).first()
@@ -105,10 +106,16 @@ def delete_caption_service():
     # else:
     #     session.delete(caption)
     #     session.commit()
+
+
     caption_to_delete = session.query(Caption).filter(Caption.id == caption_id).one()
     if caption_to_delete.author_id != g.user.id:
         msg = "This caption is not belong to you"
         return msg
+    
+    stmt = delete(user_favourite_caption).where(user_favourite_caption.c.caption_id == caption_id)
+    session.execute(stmt)
+
     # Xóa caption khỏi bảng favourites
     favourites_to_delete = session.query(Favourite).filter(Favourite.caption_id == caption_id).all()
     for favourite in favourites_to_delete:
@@ -174,7 +181,7 @@ def get_emotion_service():
 
 
 def get_list_caption_no_login_service():
-    from ..model import Caption, cap_list_schema
+    from ..model import Caption
     import os
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
@@ -193,21 +200,18 @@ def get_list_caption_no_login_service():
         vector_des = sentence_embedding(des, ft_md)
         captions = session.query(Caption).filter(Caption.author_id == 1).all()
         for caption in captions:
-            dict = {"content":[], "similarity":[], "tag": []}
             vector_cap = sentence_embedding(caption.content, ft_md)
             similarity = cosine_similarity([vector_des], [vector_cap])[0][0]
             similarity = round(similarity*100, 2)
             if 50 <= similarity <= 100:
-                dict["content"].append(caption.content)
-                dict["similarity"].append(similarity)
-                dict["tag"].append(caption.tags)
-                list_cap.append(dict)
-        return cap_list_schema.jsonify(list_cap)
+                tags = caption.tags
+                list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity,'tag': [tag.name for tag in tags]})
+        return list_cap
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
 def get_list_caption_login_service():
-    from ..model import Caption, cap_list_schema
+    from ..model import Caption
     import os
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
@@ -226,15 +230,13 @@ def get_list_caption_login_service():
         vector_des = sentence_embedding(des, ft_md)
         captions = session.query(Caption).filter(Caption.author_id == g.user.id).all()
         for caption in captions:
-            dict = {"content":[], "similarity":[]}
             vector_cap = sentence_embedding(caption.content, ft_md)
             similarity = cosine_similarity([vector_des], [vector_cap])[0][0]
             similarity = round(similarity*100, 2)
             if 50 <= similarity <= 100:
-                dict["content"].append(caption.content)
-                dict["similarity"].append(similarity)
-                list_cap.append(dict)
-        return cap_list_schema.jsonify(list_cap)
+                tags = caption.tags
+                list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity, 'tag': [tag.name for tag in tags]})
+        return list_cap
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

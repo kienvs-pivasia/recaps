@@ -14,7 +14,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 Session = sessionmaker(bind=engine)
