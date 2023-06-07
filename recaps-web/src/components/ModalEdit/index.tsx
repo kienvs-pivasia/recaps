@@ -24,17 +24,13 @@ export default function ModalEdit({
   const [emotion, setEmotion] = useState<string>("True");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<any>(null);
-  const [defaultTag, setDefaultTag] = useState(null);
+  const [selectedTag, setSelectedTag] = useState<any>(null);
 
   useEffect(() => {
     if (item) {
       setContent(item?.content);
       setEmotion(item?.emotion);
       setTag(item?.tag);
-      const tagInCaptions = tagOptions.filter((i: any) =>
-        item?.tag?.map((it: any) => it === i.name)
-      );
-      setDefaultTag(tagInCaptions);
     }
   }, [item]);
 
@@ -55,6 +51,7 @@ export default function ModalEdit({
     (e: any) => {
       const seletecdTagName = e?.map((item: any) => item?.label);
       setTag(seletecdTagName);
+      setSelectedTag(e);
     },
     [tag]
   );
@@ -71,12 +68,13 @@ export default function ModalEdit({
   }, [listTag]);
 
   const defaultValueTag = useMemo(() => {
-    if (item && tagOptions) {
-      return tagOptions.filter((item: any) =>
-        tag?.map((it: any) => it === item.name)
-      );
+    if (tagOptions) {
+      // return tagOptions
+      //   .filter((item: any) => tag?.includes(item?.label))
+      //   ?.map((i) => i.value);
+      return tagOptions.filter((item: any) => tag?.includes(item?.label));
     }
-  }, [tagOptions, item, tag]);
+  }, [tagOptions, tag]);
 
   const handleChangeEmotion = useCallback(
     (e: any) => {
@@ -90,7 +88,6 @@ export default function ModalEdit({
 
   return (
     <>
-      return (
       <Modal
         open={open}
         onClose={handleClose}
@@ -114,10 +111,10 @@ export default function ModalEdit({
               isMulti
               options={tagOptions}
               className={classes.selectInput}
-              defaultValue={defaultTag}
+              // defaultValue={tagOptions[0]}
+              value={selectedTag || defaultValueTag}
               styles={customStyle}
               onChange={(e) => handleChangeTags(e)}
-              isClearable
             />
           </div>
           <div className={classes.emotion}>
@@ -138,10 +135,10 @@ export default function ModalEdit({
             buttonType="primary"
             className={classes.btnSave}
             onClick={() => {
-              handleUpdate({ content, tag, emotion, item });
-              // setTimeout(() => {
-              //   handleClose();
-              // }, 2000);
+              handleUpdate({ content, selectedTag, emotion, item });
+              setTimeout(() => {
+                handleClose();
+              }, 1500);
             }}
           >
             Save
@@ -155,7 +152,6 @@ export default function ModalEdit({
           </Button>
         </Card>
       </Modal>
-      );
     </>
   );
 }

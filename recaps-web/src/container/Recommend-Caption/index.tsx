@@ -42,7 +42,7 @@ export default function RecommendCaption() {
 
   const handleChange = useCallback(
     (item: any) => {
-      if (item) {
+      if (item.length) {
         setImagePath(URL?.createObjectURL(item[0]));
         setPath(item[0]?.name);
         setImage(item[0]);
