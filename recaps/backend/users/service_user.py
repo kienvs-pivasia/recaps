@@ -41,20 +41,11 @@ def register_user_service():
                     responseObject = {
                         'status': 'success',
                         'message': 'Successfully registered.',
-                        'auth_token': auth_token
+                        'auth_token': auth_token,
+                        'user_name': user.username
                     }
                     session.close()
-
-                    # data = {'username':username, 'email': email, 'password': password}
-                    # headers = {'Content-Type': 'application/json'}
-                    # response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
-                    # if response.status_code == 200:
-                    #     return redirect(url_for('auth.index', _external=True))
-                    # else:
-                    # #     # Nếu đăng nhập thất bại, trả về lỗi
-                    #     response = jsonify({'message': 'User registered successfully'})
-                    #     response.status_code = 401
-                    #     return response
+                    
                     return make_response(jsonify(responseObject)), 201
                 except IndentationError:
                     response = jsonify({'message': "Cannot register"}) 
@@ -81,7 +72,8 @@ def login_user_service():
                     responseObject = {
                         'status': 'success',
                         'message': 'Successfully logged in.',
-                        'auth_token': auth_token
+                        'auth_token': auth_token,
+                        'user_name': user.username
                     }
                     return make_response(jsonify(responseObject)), 200
             except Exception as e:

@@ -51,11 +51,11 @@ def add_image_service(user_id):
     
 def get_all_captions_admin_service(user_id):
     from ..model import Caption
-    all_captions = session.query(Caption).all()
+    all_captions = session.query(Caption).filter_by(author_id=user_id).all()
     tmp = []
     for caption in all_captions:
         tags = caption.tags
-        tmp.append({'id':caption.id, 'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+        tmp.append({'id':caption.id, 'content':caption.content, 'author_id':user_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return jsonify(tmp)
 
 def get_all_tag_service(user_id):
@@ -73,7 +73,7 @@ def get_caption_favorite_service(user_id):
     tmp = []
     for caption in favorite_captions:
         tags = caption.tags
-        tmp.append({'id':caption.id,'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
+        tmp.append({'id':caption.id, 'content':caption.content, 'author_id': user_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return jsonify(tmp)
 
 def add_caption_service(user_id):
