@@ -26,8 +26,7 @@ export default function CompleteStep(props: Props) {
       return listDes[seletedDes];
     }
   }, [listDes, seletedDes]);
-  console.log("listDes", listDes);
-
+  console.log("listDes", selectedDescription);
   return (
     <div>
       <div className={classes.container}>
@@ -42,7 +41,7 @@ export default function CompleteStep(props: Props) {
             </div>
           </div>
           <div className={classes.desCaption}>
-            {selectedDescription?.content[0]}
+            {selectedDescription?.content}
           </div>
 
           <Image
@@ -55,8 +54,12 @@ export default function CompleteStep(props: Props) {
           <div style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
             <Image src={icSmile} alt="" width={32} height={32} />
             <div style={{ display: "flex", marginLeft: 20 }}>
-              <div className={classes.tag}>Tinh yeu</div>
-              <div className={classes.tag}>Tinh yeu</div>
+              {selectedDescription?.tag?.map((i: string, index: number) => (
+                <div className={classes.tag} key={index}>
+                  {i}
+                </div>
+              ))}
+              {/* <div className={classes.tag}>Tinh yeu</div> */}
             </div>
           </div>
           <Button

@@ -23,7 +23,11 @@ interface NewCaptionBody {
 const token = checkExistLocalStorage() && localStorage.getItem("user");
 
 export function getListCaptions() {
-  return unauthorizedRequest.get(`/caption/get_all_caption`);
+  return axios.get(`http://127.0.0.1:5000/caption/get_all_caption`, {
+    headers: {
+      Authorization: `${token}`,
+    },
+  });
 }
 
 export function addNewCaption(body: NewCaptionBody) {
@@ -31,7 +35,7 @@ export function addNewCaption(body: NewCaptionBody) {
 
   return axios.post(`http://127.0.0.1:5000/caption/add_favorite`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
@@ -40,7 +44,7 @@ export function updateContentCaption(body: any) {
   // return authorizedRequest.post(`/UpdateCaption`, body);
   return axios.put(`http://127.0.0.1:5000/caption/edit_content`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
@@ -48,7 +52,7 @@ export function updateContentCaption(body: any) {
 export function updateEmotionCaption(body: any) {
   return axios.put(`http://127.0.0.1:5000/caption/edit_emotion`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
@@ -56,7 +60,7 @@ export function updateEmotionCaption(body: any) {
 export function updateTagCaption(body: any) {
   return axios.put(`http://127.0.0.1:5000/caption/edit_tag_id`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
@@ -64,26 +68,28 @@ export function updateTagCaption(body: any) {
 export function deleteCaption(body: any) {
   return axios.post(`http://127.0.0.1:5000/caption/delete_caption`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
 
 export function getListCaptionFavourite() {
-  return axios.get(`http://127.0.0.1:5000/caption/get_caption_favorite`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': '*'
-    },
-  }).catch(error => console.log(error));
+  return axios
+    .get(`http://127.0.0.1:5000/caption/get_caption_favorite`, {
+      headers: {
+        Authorization: `${token}`,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "*",
+      },
+    })
+    .catch((error) => console.log(error));
 }
 
 export function addCaptionFavorite(body: any) {
   return axios.post(`http://127.0.0.1:5000/caption/add_favorite`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
@@ -91,7 +97,7 @@ export function addCaptionFavorite(body: any) {
 export function removeCaptionFavorite(body: any) {
   return axios.post(`http://127.0.0.1:5000/caption/remove_favorite`, body, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `${token}`,
     },
   });
 }
