@@ -47,7 +47,9 @@ export default function Login() {
         localStorage.setItem("user", res.data.access_token);
         router.push("/account");
       })
-      .catch((err) => toastError(err));
+      .catch((err) => {
+        toastError(err.response.data.message);
+      });
   }, []);
 
   return (
@@ -81,7 +83,7 @@ export default function Login() {
                 className={
                   !errors.passWord ? classes.inputBox : classes.errorInput
                 }
-                placeholder="PassWord"
+                placeholder="Password"
                 type="password"
                 {...register("passWord")}
               />

@@ -33,21 +33,24 @@ export default function Step3({
       setUrlImage(localStorage.getItem("urlImage") as string);
     }
   }, []);
+  const sortData = useMemo(() => {
+    return listDes.sort((a, b) => b.similarity - a.similarity);
+  }, [listDes]);
 
   return (
     <>
       <Card className={classes.card}>
         <LineStepper />
-        <Grid container spacing={4} style={{ marginTop: 20 }}>
+        <Grid container spacing={4} style={{ marginTop: 20, height: 500 }}>
           <Grid item xs={7}>
-            <Card className={classes.emotionCard}>
+            <Card className={classes.emotionCard} style={{ height: 500 }}>
               <div className={classes.listTitle}>
                 <div className={classes.captionTitle}>Captions</div>
                 <div className={classes.captionTitle}>Similarity</div>
               </div>
               <div className={classes.dived} />
               <div className={classes.listCaps}>
-                {listDes?.map((item, index) => (
+                {sortData?.map((item, index) => (
                   <div
                     className={cx(classes.item, {
                       [classes.selected]: seletedDes === index,
@@ -55,17 +58,20 @@ export default function Step3({
                     onClick={() => handleChooseCaption(index)}
                   >
                     <div style={{ maxWidth: 500 }}>
-                      <div className={classes.itemCaps}>{item?.content[0]}</div>
+                      <div className={classes.itemCaps}>{item?.content}</div>
                       <div className={classes.itemList}>
                         <div style={{ display: "flex" }}>
-                          <div className={classes.itemTag}>Tình yêu</div>
-                          <div className={classes.itemTag}>Thả thính</div>
+                          {item?.tag?.map((i: string, index: number) => (
+                            <div className={classes.itemTag} key={index}>
+                              {i}
+                            </div>
+                          ))}
                         </div>
                         {/* <div className={classes.dayItem}>3 days ago</div> */}
                       </div>
                     </div>
                     <div className={classes.similarity}>
-                      {item?.similarity[0]}%
+                      {item?.similarity}%
                     </div>
                   </div>
                 ))}
@@ -73,13 +79,10 @@ export default function Step3({
             </Card>
           </Grid>
           <Grid item xs={5}>
-            <div style={{ position: "relative", height: 340 }}>
+            <div style={{ position: "relative", height: 500 }}>
               {urlImage && (
                 <Image
-                  src={
-                    urlImage ||
-                    `https://vapa.vn/wp-content/uploads/2022/12/anh-mau-dep-001.jpg`
-                  }
+                  src={urlImage || ``}
                   alt=""
                   className={classes.img}
                   fill
