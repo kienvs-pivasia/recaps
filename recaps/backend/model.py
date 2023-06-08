@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 import datetime
 from sqlalchemy.orm import relationship, sessionmaker
 from backend.db import ma
+import jwt
+from backend import create_app
 
 engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
@@ -13,6 +15,8 @@ session = Session()
 
 # Khai báo base class cho các model
 Base = declarative_base()
+
+app = create_app()
 
 # Định nghĩa bảng User
 class User(Base):
@@ -30,6 +34,45 @@ class User(Base):
 
     # Quan hệ nhiều-nhiều với bảng Favourite
     favourite_captions = relationship('Caption', secondary='user_favourite_caption')
+
+    def __init__(self, user_id, username, password):
+       self.id = user_id
+       self.username = username
+       self.password = password
+
+    def encode_auth_token(self, user_id):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms="HS256")
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
 
 # Định nghĩa bảng Images
 class Image(Base):
@@ -81,6 +124,33 @@ class Favourite(Base):
     # Quan hệ nhiều-nhiều với bảng Caption
     caption_id = Column(Integer, ForeignKey('captions.id'))
     status = Column(Boolean, default=False)
+
+class BlacklistToken():
+    """
+    Token Model for storing JWT tokens
+    """
+    __tablename__ = 'blacklist_tokens'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    token = Column(String(500), unique=True, nullable=False)
+    blacklisted_on = Column(DateTime, nullable=False)
+
+    def __init__(self, token):
+        self.token = token
+        self.blacklisted_on = datetime.datetime.now()
+
+    def __repr__(self):
+        return '<id: token: {}'.format(self.token)
+
+    @staticmethod
+    def check_blacklist(auth_token):
+        # check whether auth token has been blacklisted
+        res = session.query(BlacklistToken).filter_by(token=str(auth_token)).first()
+        if res:
+            return True
+        else:
+            return False
+
 
 # Định nghĩa bảng trung gian caption_tag
 caption_tag = Table('caption_tag', Base.metadata,

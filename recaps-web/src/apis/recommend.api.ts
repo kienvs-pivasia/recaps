@@ -28,7 +28,7 @@ export function getListCaptionForLogin(body: any) {
         Authorization: `Bearer ${token}`,
       },
     }
-  );
+  ).catch(error => console.log(error));
 }
 
 export function getListCaptionForNoLogin(body: any) {

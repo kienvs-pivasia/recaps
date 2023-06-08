@@ -4,10 +4,11 @@ from flask_cors import CORS
 
 def create_app(config_file="config.py"):
     app = Flask(__name__)
+    # cors = CORS()
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
     jwt = JWTManager(app)
     app.config.from_pyfile(config_file)
-
+    # cors.init_app(app)
     from .caption.controller_caption import caption_bp
 
     app.register_blueprint(caption_bp)

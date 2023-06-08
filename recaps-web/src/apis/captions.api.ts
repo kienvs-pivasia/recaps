@@ -28,6 +28,7 @@ export function getListCaptions() {
 
 export function addNewCaption(body: NewCaptionBody) {
   // return authorizedRequest.post(`/caption/add_caption`, body);
+
   return axios.post(`http://127.0.0.1:5000/caption/add_favorite`, body, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -72,8 +73,11 @@ export function getListCaptionFavourite() {
   return axios.get(`http://127.0.0.1:5000/caption/get_caption_favorite`, {
     headers: {
       Authorization: `Bearer ${token}`,
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': '*'
     },
-  });
+  }).catch(error => console.log(error));
 }
 
 export function addCaptionFavorite(body: any) {

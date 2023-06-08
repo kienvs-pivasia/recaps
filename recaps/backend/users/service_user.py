@@ -1,5 +1,5 @@
 from backend.model import User
-from flask import request, g, jsonify, render_template, redirect, url_for
+from flask import request, g, jsonify, render_template, redirect, url_for, make_response
 from flask_jwt_extended import (
     create_access_token,
     set_access_cookies,
@@ -36,7 +36,14 @@ def register_user_service():
                     newUser = User(username=username, email=email, password=password)
                     session.add(newUser)
                     session.commit()
+                    auth_token = newUser.encode_auth_token(newUser.id)
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'Successfully registered.',
+                        'auth_token': auth_token
+                    }
                     session.close()
+
                     # data = {'username':username, 'email': email, 'password': password}
                     # headers = {'Content-Type': 'application/json'}
                     # response = requests.post('http://127.0.0.1:5000/user/login', headers=headers, data=json.dumps(data))
@@ -47,7 +54,7 @@ def register_user_service():
                     #     response = jsonify({'message': 'User registered successfully'})
                     #     response.status_code = 401
                     #     return response
-                    return jsonify({"message":"Done"}), 200
+                    return make_response(jsonify(responseObject)), 201
                 except IndentationError:
                     response = jsonify({'message': "Cannot register"}) 
         response.status_code = 400
@@ -67,18 +74,61 @@ def login_user_service():
             response = "Incorrect username or password"
         else:
             try:
-                data = {'userid': user.id, 'email': email, 'password': password}
-                access_token = create_access_token(identity=data)
-                response = make_response("Success")
-                set_access_cookies(response, access_token)
-                g.user = session.query(User).filter_by(email=email).one()
-                return jsonify({'access_token': access_token}), 200
-            except IndentationError:
-                response = "Cannot login"
+                auth_token = user.encode_auth_token(user.id)
+                # print(auth_token)
+                if auth_token:
+                    responseObject = {
+                        'status': 'success',
+                        'message': 'Successfully logged in.',
+                        'auth_token': auth_token
+                    }
+                    return make_response(jsonify(responseObject)), 200
+            except Exception as e:
+                print(e)
+                responseObject = {
+                    'status': 'fail',
+                    'message': 'Try again'
+                }
+                return make_response(jsonify(responseObject)), 500
 
     return jsonify({"message":response}), 500
     
 def log_out_service():
-    response = redirect(url_for("auth.index"))
-    unset_jwt_cookies(response)
-    return response
+    from ..model import BlacklistToken
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[1]
+    else:
+        auth_token = ''
+    if auth_token:
+        resp = User.decode_auth_token(auth_token)
+        if not isinstance(resp, str):
+            # mark the token as blacklisted
+            blacklist_token = BlacklistToken(token=auth_token)
+            try:
+                # insert the token
+                session.add(blacklist_token)
+                session.commit()
+                responseObject = {
+                    'status': 'success',
+                    'message': 'Successfully logged out.'
+                }
+                return make_response(jsonify(responseObject)), 200
+            except Exception as e:
+                responseObject = {
+                    'status': 'fail',
+                    'message': e
+                }
+                return make_response(jsonify(responseObject)), 200
+        else:
+            responseObject = {
+                'status': 'fail',
+                'message': resp
+            }
+            return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 403
