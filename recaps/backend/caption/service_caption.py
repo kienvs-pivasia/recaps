@@ -51,7 +51,7 @@ def add_image_service(user_id):
     
 def get_all_captions_admin_service(user_id):
     from ..model import Caption
-    all_captions = session.query(Caption).first()
+    all_captions = session.query(Caption).all()
     tmp = []
     for caption in all_captions:
         tags = caption.tags
