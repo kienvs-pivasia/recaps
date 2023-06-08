@@ -32,19 +32,14 @@ class User(Base):
     # Quan hệ nhiều-nhiều với bảng Favourite
     favourite_captions = relationship('Caption', secondary='user_favourite_caption')
 
-<<<<<<< HEAD
-    # def __init__(self, user_id, username, password):
-    #    self.id = user_id
-    #    self.username = username
-    #    self.password = password
 
-=======
+
     # def __init__(self, user_id, username, password, email):
     #     self.id = user_id
     #     self.username = username
     #     self.password = password
     #     self.email = email
->>>>>>> 027827dcdbe5280a2103c2193322ed02dc394900
+
     def encode_auth_token(self, user_id):
         """
         Generates the Auth Token
