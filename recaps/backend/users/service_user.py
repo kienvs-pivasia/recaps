@@ -1,24 +1,25 @@
 from backend.model import User
 from flask import request, g, jsonify, render_template, redirect, url_for, make_response
-from flask_jwt_extended import (
-    create_access_token,
-    set_access_cookies,
-    unset_jwt_cookies,
-    JWTManager,
-    get_jwt_identity,
-    verify_jwt_in_request
-)
-import requests
-import json
+# from flask_jwt_extended import (
+#     create_access_token,
+#     set_access_cookies,
+#     unset_jwt_cookies,
+#     JWTManager,
+#     get_jwt_identity,
+#     verify_jwt_in_request
+# )
+# import requests
+# import json
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker
 
+from ..model import session
 # engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+# engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 
-Session = sessionmaker(bind=engine)
-session = Session()
+# Session = sessionmaker(bind=engine)
+# session = Session()
 
 def register_user_service():
     if request.method == "POST":

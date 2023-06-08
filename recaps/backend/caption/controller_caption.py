@@ -4,7 +4,7 @@ from .service_caption import (get_all_captions_admin_service, get_caption_favori
                       add_caption_service, delete_caption_service, add_favorite_service, remove_favorite_service, edit_content_service,
                       edit_emotion_service, edit_tag_id_service, add_image_service, get_all_tag_service)
 
-from flask_jwt_extended import jwt_required
+# from flask_jwt_extended import jwt_required
 from ..auth import check_user_login
 
 caption_bp = Blueprint("caption", __name__, url_prefix="/caption")
@@ -14,18 +14,37 @@ def _build_cors_preflight_response():
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add("Access-Control-Allow-Headers", "*")
     response.headers.add("Access-Control-Allow-Methods", "*")
-    return response
+    return jsonify(response)
 
 @caption_bp.route("/get_all_caption", methods=["GET", "OPTIONS"], endpoint='func1') #done
 #@jwt_required(optional=True)
 def get_all_caption():
-    if check_user_login(request) != None:
-        # print(check_user_login(request))
-        user_id = check_user_login(request)
+    user_id = check_user_login(request)
+    print("captions")
+    if user_id != None:
         if request.method == 'OPTIONS':
             return _build_cors_preflight_response()
         elif request.method == 'GET':
             return get_all_captions_admin_service(user_id)
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 403
+
+
+@caption_bp.route("/get_all_tag", methods=["GET", "OPTIONS"], endpoint='func10') #done
+#@jwt_required(optional=True)
+def get_all_tag():
+    user_id = check_user_login(request)
+    print("Tags")
+    if user_id != None:
+        print(user_id)
+        if request.method == 'OPTIONS':
+            return _build_cors_preflight_response()
+        elif request.method == 'GET':
+            return get_all_tag_service(user_id)
     else:
         responseObject = {
             'status': 'fail',
@@ -53,6 +72,7 @@ def add_image():
 #@jwt_required(optional=True)
 def get_caption_favorite():
     if check_user_login(request) != None:
+        print("Favourite")
         user_id = check_user_login(request)
         if request.method == 'OPTIONS':
             return _build_cors_preflight_response()
@@ -127,22 +147,6 @@ def get_tag_by_id():
             return _build_cors_preflight_response()
         elif request.method == 'GET':
             return get_tag_by_id_service(user_id)
-    else:
-        responseObject = {
-            'status': 'fail',
-            'message': 'Provide a valid auth token.'
-        }
-        return make_response(jsonify(responseObject)), 403
-
-@caption_bp.route("/get_all_tag", methods=["GET", "OPTIONS"], endpoint='func10') #done
-#@jwt_required(optional=True)
-def get_all_tag():
-    if check_user_login(request) != None:
-        user_id = check_user_login(request)
-        if request.method == 'OPTIONS':
-            return _build_cors_preflight_response()
-        elif request.method == 'GET':
-            return get_all_tag_service(user_id)
     else:
         responseObject = {
             'status': 'fail',

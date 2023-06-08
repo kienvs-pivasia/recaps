@@ -1,10 +1,18 @@
-from flask import Blueprint, make_response, render_template_string, jsonify
+from flask import Blueprint, make_response, render_template_string, jsonify, request
 from sqlalchemy.orm import sessionmaker
 import requests
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 # @bp.before_app_request
+
+@bp.before_app_request
+def before_request():
+    headers = { 'Access-Control-Allow-Origin': '*',
+               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+               'Access-Control-Allow-Headers': 'Content-Type' }
+    if request.method == 'OPTIONS':
+        return jsonify(headers), 200
 
 def check_user_login(request):
     from .model import User
@@ -16,7 +24,7 @@ def check_user_login(request):
     session = Session()
     try:
         auth_header = request.headers.get('Authorization')
-        # print(auth_header)
+        print(auth_header)
         if auth_header:
             auth_token = auth_header
         else:
@@ -26,6 +34,7 @@ def check_user_login(request):
             # print(resp)
             if not isinstance(resp, str):
                 user = session.query(User).filter_by(id=resp).first()
+                # print(user.id)
                 return user.id
             return None
         else:
@@ -35,7 +44,7 @@ def check_user_login(request):
             'status': 'fail',
             'message': 'Bearer token malformed.'
         }
-        # print(responseObject)
+        print(responseObject)
         return None
     
 

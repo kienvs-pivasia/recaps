@@ -17,17 +17,17 @@ import fasttext
 import datetime
 from keras.models import load_model
 import os
-
+from ..model import session
 #load model AI
 emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
 # Tạo đối tượng session
 # engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+# engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 
-Session = sessionmaker(bind=engine)
-session = Session()
+# Session = sessionmaker(bind=engine)
+# session = Session()
 
 def add_image_service(user_id):
     from ..model import Image
@@ -51,12 +51,20 @@ def add_image_service(user_id):
     
 def get_all_captions_admin_service(user_id):
     from ..model import Caption
-    all_captions = session.query(Caption).all()
+    all_captions = session.query(Caption).first()
     tmp = []
     for caption in all_captions:
         tags = caption.tags
         tmp.append({'id':caption.id, 'content':caption.content, 'author_id':caption.author_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
-    return tmp
+    return jsonify(tmp)
+
+def get_all_tag_service(user_id):
+    from ..model import Tag
+    tags = session.query(Tag).all()
+    output = []
+    for tag in tags:
+        output.append({"tag_id": tag.id, "tag_name": tag.name})
+    return jsonify(output)
 
 def get_caption_favorite_service(user_id):
     from ..model import User
@@ -66,7 +74,7 @@ def get_caption_favorite_service(user_id):
     for caption in favorite_captions:
         tags = caption.tags
         tmp.append({'id':caption.id,'content':caption.content, 'author_id':1, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
-    return tmp
+    return jsonify(tmp)
 
 def add_caption_service(user_id):
     from ..model import Caption, Tag
@@ -94,7 +102,7 @@ def add_caption_service(user_id):
     return {'content':text, 'author_id':user_id, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': tags}
 
 def delete_caption_service(user_id):
-    from ..model import Caption, Favourite, caption_tag, Tag, user_favourite_caption, User
+    from ..model import Caption, Favourite, caption_tag, Tag, user_favourite_caption
     from sqlalchemy import delete
     msg = None
     caption_id = request.json['id']
@@ -110,7 +118,7 @@ def delete_caption_service(user_id):
     caption_to_delete = session.query(Caption).filter(Caption.id == caption_id).one()
     if caption_to_delete.author_id != user_id:
         msg = "This caption is not belong to you"
-        return msg
+        return jsonify({'Message': msg})
     
     stmt = delete(user_favourite_caption).where(user_favourite_caption.c.caption_id == caption_id)
     session.execute(stmt)
@@ -154,7 +162,6 @@ def get_des_service():
         return jsonify({'error': str(e)}), 500
     
 def get_emotion_service():
-    from ..model import emotion_schema
     import os
     if 'file' not in request.files:
         return jsonify({'error': 'no file provided'}), 400
@@ -205,7 +212,7 @@ def get_list_caption_no_login_service():
             if 50 <= similarity <= 100:
                 tags = caption.tags
                 list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity,'tag': [tag.name for tag in tags]})
-        return list_cap
+        return jsonify(list_cap)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
@@ -235,7 +242,7 @@ def get_list_caption_login_service(user_id):
             if 50 <= similarity <= 100:
                 tags = caption.tags
                 list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity, 'tag': [tag.name for tag in tags]})
-        return list_cap
+        return jsonify(list_cap)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -246,12 +253,6 @@ def get_list_tag_service(user_id):
     for caption in captions:
         output[caption.content] = [tag.name for tag in caption.tags]
     return jsonify(output)
-
-def get_all_tag_service(user_id):
-    from ..model import Tag, tags_schema
-    tags = session.query(Tag).all()
-    return tags_schema.jsonify(tags)
-
 
 def get_tag_by_id_service(user_id):
     from ..model import Tag, Caption
@@ -279,14 +280,13 @@ def add_favorite_service(user_id):
         )
         session.add(newFavourite)
         session.commit()
-        return jsonify({"caption": caption.content, "user": user.username})
+        return jsonify({"id": caption.id, "caption": caption.content, "user": user.username})
     else:
         return "This id is not exist"
 
 def remove_favorite_service(user_id):
     from ..model import User, Caption, user_favourite_caption
     id = request.json['id']
-    # user = session.query(User).filter_by(id=g.user.id).first()
     caption = session.query(user_favourite_caption).filter_by(caption_id=id).first()
     if caption:
         delete_statement = user_favourite_caption.delete().where(and_(user_favourite_caption.c.user_id == user_id, user_favourite_caption.c.caption_id == id))
@@ -297,19 +297,19 @@ def remove_favorite_service(user_id):
         return "This id is not exist"
 
 def edit_content_service(user_id):
-    from ..model import Caption, captions_schema
+    from ..model import Caption
     msg = None
     id = request.json['id']
     caption = session.query(Caption).filter_by(id=id).first()
     new_content = request.json['content']
     if caption.author_id != user_id:
         msg = "This caption is not belong to you"
-        return msg
+        return jsonify({"Message": msg})
     else:
         caption.content=new_content
         session.commit()
         msg = "Done"
-        return msg
+        return jsonify({"Message": msg})
 
 def edit_emotion_service(user_id):
     from ..model import Caption, captions_schema
@@ -319,12 +319,12 @@ def edit_emotion_service(user_id):
     new_emotion = request.json['emotion']
     if caption.author_id != user_id:
         msg = "This caption is not belong to you"
-        return msg
+        return jsonify({"Message": msg})
     else:
         caption.emotion=new_emotion
         session.commit()
         msg = "Done"
-        return msg
+        return jsonify({"Message": msg})
 
 def edit_tag_id_service(user_id):
     from ..model import Caption, caption_tag, Tag
@@ -335,15 +335,15 @@ def edit_tag_id_service(user_id):
     new_tag_id = request.json['tag_id']
     if caption.author_id != user_id:
         msg = "This caption is not belong to you"
-        return msg
+        return jsonify({"Message": msg})
     
     ct = session.query(caption_tag).filter_by(caption_id=id).first()
     if new_tag_id == ct.tag_id:
         msg = "Tag id is already exist"
-        return msg
+        return jsonify({"Message": msg})
     else:
         stmt = update(caption_tag).where(caption_tag.c.caption_id == id).values(tag_id=new_tag_id, tag_name=session.query(Tag).filter_by(id=new_tag_id).first().name)
         session.execute(stmt)
         session.commit()
         msg = "Done"
-        return msg
+        return jsonify({"Message": msg})

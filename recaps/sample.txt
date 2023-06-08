@@ -1,17 +1,20 @@
-I. Test trước khi login
+I. Authentica:
+    - Truyền vào header: Authentica: {token}
+
+II. Function
     - get_all_caption: Method GET, 127.0.0.1:5000/caption/get_all_caption
         + Input: None
-        + Output: List caption
+        + Output: jsonnify({'id':id, 'content':content, 'author_id':author_id, 'created_at':created_at, 'emotion':emotion, 'tag': [tag.name for tag in tags]})
 
-    - add_image: Method POST, 127.0.0.1:5000/caption/add_image @jwt_required #done donex2
+    - add_image: Method POST, 127.0.0.1:5000/caption/add_image
         + Input: file Image
-        + Output: {'image_dir': filelink, 'user_id':user_id, 'upload_time':datetime.datetime.now()}
+        + Output: jsonify{'image_dir': filelink, 'user_id':user_id, 'upload_time':datetime.datetime.now()}
 
-    - get_caption_favorite: Method GET, 127.0.0.1:5000/caption/get_caption_favorite @jwt_required #done.... donex2
+    - get_caption_favorite: Method GET, 127.0.0.1:5000/caption/get_caption_favorite 
         + Input: None
-        + Output: List[('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')]
+        + Output: jsonify(list('id', 'content', 'author_id', 'created_at', 'emotion', 'tags'))
 
-    - get_des: Method POST, 127.0.0.1:5000/caption/get_des
+    - get_des: Method POST,=127.0.0.1:5000/caption/get_des
         + Input: file Image
         + Output:{"des": des}
 
@@ -19,50 +22,46 @@ I. Test trước khi login
         + Input: file Image
         + Output: {"emo": emotion}
 
-    - get_list_caption_login: Method POST, 127.0.0.1:5000/caption/get_list_caption_login @jwt_required #done... donex2
+    - get_list_caption_login: Method POST, 127.0.0.1:5000/caption/get_list_caption_login
         + Input: file Image
-        + Output: ('content', 'similarity')
+        + Output: jsonify('content', 'similarity')
 
-    - get_list_caption_no_login: Method GET, 127.0.0.1:5000/caption/get_list_caption_no_login @jwt_required #done ..... donex2
+    - get_list_caption_no_login: Method GET, 127.0.0.1:5000/caption/get_list_caption_no_login
         + Input: file Image
-        + Output: ('content', 'similarity')
+        + Output: jsonify('content', 'similarity')
 
-    - get_list_tag: Method GET, 127.0.0.1:5000/caption/get_list_tag @jwt_required #done..... donex2 
+    - get_list_tag: Method GET, 127.0.0.1:5000/caption/get_list_tag 
         + Input: None
         + Output: list[{ "content": [tag]}]
 
-    - get_tag_by_id: Method GET, 127.0.0.1:5000/caption/get_tag_by_id @jwt_required # done truyen id caption ....... done x2
+    - get_tag_by_id: Method GET, 127.0.0.1:5000/caption/get_tag_by_id 
         + Input: {"id": id}
-        + Output:{"Caption": content, "tag_name": [], "tag_id": []}
+        + Output:jsonify({"id": id, "Caption": content, "tag_name": [], "tag_id": []})
 
-    - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption @jwt_required #done ..... donex2
+    - add_caption: Method POST, 127.0.0.1:5000/caption/add_caption
         + Input: {"content":"abcd", "emotion": "True", "tag": ["love"]}
-        + Output: {'content':text, 'author_id':1, 'created_at':datetime.datetime.now(), 'emotion':emotion, 'tag': []}
+        + Output: {'content':text, 'author_id':1, 'created_at':, 'emotion':emotion, 'tag': [tags]}
 
-    - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption @jwt_required #done ...... donex2
+    - delete_caption: Method POST, 127.0.0.1:5000/caption/delete_caption
         + Input: {"id": id}
-        + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
+        + Output: jsonify(message)
 
-    - add_favorite: Method POST, 127.0.0.1:5000/caption/add_favorite @jwt_required #done ........ donex2
+    - add_favorite: Method POST, 127.0.0.1:5000/caption/add_favorite 
         + Input: {"id": id}
-        + Output: {"caption": content, "user": username}
+        + Output: {"id": id, "caption": content, "user": username}
 
-    - remove_favorite: Method POST, 127.0.0.1:5000/caption/remove_favorite @jwt_required #done ...... donex2
+    - remove_favorite: Method POST, 127.0.0.1:5000/caption/remove_favorite
         + Input: {"id": id}
-        + Output: {"caption": content, "user": username}
+        + Output: jsonify({"Message":"Done"}), 200
 
-    - edit_content: Method PUT, 127.0.0.1:5000/caption/edit_content @jwt_required # done ........ donex2
+    - edit_content: Method PUT, 127.0.0.1:5000/caption/edit_content
         + Input: {"id": id, "content": content}
-        + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
+        + Output: jsonify({"Message":""})
 
-    - edit_emotion: Method PUT, 127.0.0.1:5000/caption/edit_emotion @jwt_required # done ....... donex2
+    - edit_emotion: Method PUT, 127.0.0.1:5000/caption/edit_emotion
         + Input: {"id": id, "emotion": emotion}
-        + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
+        + Output: jsonify({"Message":""})
 
-    - edit_tag_id: Method PUT, 127.0.0.1:5000/caption/edit_tag_id @jwt_required # done ..... donex2
+    - edit_tag_id: Method PUT, 127.0.0.1:5000/caption/edit_tag_id
         + Input: {"id": id, "tag_id": tag_id}
-        + Output: ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
-
-II. Test sau khi login:
-    - Bỏ comment : # @jwt_required()
-    - Thay những chỗ được comment bởi g.user.id
+        + Output: jsonify({"Message":""})

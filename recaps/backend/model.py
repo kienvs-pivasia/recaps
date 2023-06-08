@@ -2,11 +2,9 @@ from sqlalchemy import Column, String, ForeignKey, create_engine, Integer, Strin
 from sqlalchemy.ext.declarative import declarative_base
 import datetime
 from sqlalchemy.orm import relationship, sessionmaker
-from backend.db import ma
 import jwt
-from backend import create_app
 
-engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 # Tạo một session để thao tác với database
@@ -16,7 +14,6 @@ session = Session()
 # Khai báo base class cho các model
 Base = declarative_base()
 
-app = create_app()
 
 # Định nghĩa bảng User
 class User(Base):
@@ -54,7 +51,7 @@ class User(Base):
             }
             return jwt.encode(
                 payload,
-                app.config.get('SECRET_KEY'),
+                'buiducson',
                 algorithm='HS256'
             )
         except Exception as e:
@@ -67,7 +64,7 @@ class User(Base):
         :return: integer|string
         """
         try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'), algorithms="HS256")
+            payload = jwt.decode(auth_token, 'buiducson', algorithms="HS256")
             return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
@@ -165,53 +162,53 @@ user_favourite_caption = Table('user_favourite_caption', Base.metadata,
                                Column('caption_id', Integer, ForeignKey('captions.id'))
                                )
 
-class UsersSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'username', 'password')
+# class UsersSchema(ma.Schema):
+#     class Meta:
+#         fields = ('id', 'username', 'password')
 
-class CaptionSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
+# class CaptionSchema(ma.Schema):
+#     class Meta:
+#         fields = ('id', 'content', 'author_id', 'created_at', 'emotion', 'tags')
 
-class TagSchema(ma.Schema):
-    class Meta:
-        fields = ('id', 'name')
+# class TagSchema(ma.Schema):
+#     class Meta:
+#         fields = ('id', 'name')
 
-class CaptionTagSchema(ma.Schema):
-    class Meta:
-        fields = ('caption_id', 'tag_name', 'tag_id')
+# class CaptionTagSchema(ma.Schema):
+#     class Meta:
+#         fields = ('caption_id', 'tag_name', 'tag_id')
 
-class CaptionTagCountSchema(ma.Schema):
-    class Meta:
-        fields = ('caption_id', 'tag_id', 'count(1)')
+# class CaptionTagCountSchema(ma.Schema):
+#     class Meta:
+#         fields = ('caption_id', 'tag_id', 'count(1)')
 
-class FavoriteSchema(ma.Schema):
-    class Meta:
-        fields = ('caption_id', 'user_id', 'status')
+# class FavoriteSchema(ma.Schema):
+#     class Meta:
+#         fields = ('caption_id', 'user_id', 'status')
 
-class DesSchema(ma.Schema):
-   class Meta:
-      fields = ('des',)
+# class DesSchema(ma.Schema):
+#    class Meta:
+#       fields = ('des',)
 
-class EmotionSchema(ma.Schema):
-   class Meta:
-      fields = ('emotion',)
+# class EmotionSchema(ma.Schema):
+#    class Meta:
+#       fields = ('emotion',)
 
-class CapListSchema(ma.Schema):
-   class Meta:
-      fields = ('id', 'content', 'similarity')
+# class CapListSchema(ma.Schema):
+#    class Meta:
+#       fields = ('id', 'content', 'similarity')
 
-des_schema = DesSchema()
-emotion_schema = EmotionSchema()
-cap_list_schema = CapListSchema(many=True)
-user_schema = UsersSchema()
-users_schema = UsersSchema(many=True)
-captions_schema = CaptionSchema(many=True)
-caption_tag_schema = CaptionTagSchema(many=True)
-caption_tag_count_schema = CaptionTagCountSchema(many=True)
-tag_schema = TagSchema()
-tags_schema = TagSchema(many=True)
-favorite_schema = FavoriteSchema(many=True)
+# des_schema = DesSchema()
+# emotion_schema = EmotionSchema()
+# cap_list_schema = CapListSchema(many=True)
+# user_schema = UsersSchema()
+# users_schema = UsersSchema(many=True)
+# captions_schema = CaptionSchema(many=True)
+# caption_tag_schema = CaptionTagSchema(many=True)
+# caption_tag_count_schema = CaptionTagCountSchema(many=True)
+# tag_schema = TagSchema()
+# tags_schema = TagSchema(many=True)
+# favorite_schema = FavoriteSchema(many=True)
 
 # Tạo các bảng trong database
 Base.metadata.create_all(engine)
