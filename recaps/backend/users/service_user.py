@@ -45,7 +45,7 @@ def register_user_service():
                         'user_name': username
                     }
                     session.close()
-                    
+
                     return make_response(jsonify(responseObject)), 201
                 except IndentationError:
                     response = jsonify({'message': "Cannot register"}) 
