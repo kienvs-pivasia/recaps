@@ -138,6 +138,7 @@ def delete_caption_service(user_id):
 
     # Lưu các thay đổi vào cơ sở dữ liệu
     session.commit()
+    
     return jsonify({'Message': "Done"}), 200
 
 def get_des_service():
@@ -232,9 +233,13 @@ def get_list_caption_login_service(user_id):
         filelink = os.path.join('statics/Images/uploads', filename)
         img.save(filelink)
         des = generate_caption_img(filelink)
+        translator = Translator()
+        des = translator.translate(des, dest="vi").text
         list_cap = []
         vector_des = sentence_embedding(des, ft_md)
+        # print("in get_list_caption_login", user_id)
         captions = session.query(Caption).filter(Caption.author_id == user_id).all()
+        # print(len(captions))
         for caption in captions:
             vector_cap = sentence_embedding(caption.content, ft_md)
             similarity = cosine_similarity([vector_des], [vector_cap])[0][0]
@@ -242,6 +247,7 @@ def get_list_caption_login_service(user_id):
             if 50 <= similarity <= 100:
                 tags = caption.tags
                 list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity, 'tag': [tag.name for tag in tags]})
+        # print(len(list_cap))
         return jsonify(list_cap)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -312,7 +318,7 @@ def edit_content_service(user_id):
         return jsonify({"Message": msg})
 
 def edit_emotion_service(user_id):
-    from ..model import Caption, captions_schema
+    from ..model import Caption
     msg = None
     id = request.json['id']
     caption = session.query(Caption).filter_by(id=id).first()

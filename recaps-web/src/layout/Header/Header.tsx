@@ -15,15 +15,14 @@ import jwtDecode from "jwt-decode";
 
 export default function Header() {
   const router = useRouter();
-  // const [userInfo, setUserInfo] = useState<any>();
-  // useEffect(() => {
-  //   if (router.pathname.includes("account")) {
-  //     const getItem: any =
-  //       checkExistLocalStorage() && localStorage.getItem("user");
-  //     const decodeToken = jwtDecode(getItem);
-  //     setUserInfo(decodeToken);
-  //   }
-  // }, [router]);
+  const [userInfo, setUserInfo] = useState<any>("");
+  useEffect(() => {
+    if (router.pathname.includes("account")) {
+      const nameUser: any =
+        checkExistLocalStorage() && localStorage.getItem("userName");
+      setUserInfo(nameUser);
+    }
+  }, [router]);
   const handleLogout = useCallback(async () => {
     await doLogout()
       .then(() => {
@@ -74,8 +73,7 @@ export default function Header() {
               />
             </div>
             <div className={cx(classes.itemNoti, classes.name)}>
-              {/* {userInfo?.sub?.email || "User Name"} */}
-              User Name
+              {userInfo || "User Name"}
             </div>
             <div className={cx(classes.groupBtn, "ml-3")}>
               <Link href={"/login"}>
@@ -114,7 +112,7 @@ export default function Header() {
         </Button>
       </div>
     );
-  }, [router]);
+  }, [router, userInfo]);
   const handleClickIcon = useCallback(() => {
     if (router.pathname.includes("account")) {
       return router.push("/account");

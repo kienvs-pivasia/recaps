@@ -23,7 +23,7 @@ import {
 } from "@/apis/captions.api";
 import { checkExistLocalStorage } from "@/helper/ultilities";
 import { useRouter } from "next/router";
-import { getListTag } from "@/apis/listTag.api";
+import { getAllTag, getListTag } from "@/apis/listTag.api";
 import ItemCaption from "@/components/CaptionItem";
 import { toastError, toastSuccess } from "@/helper/toastMessage";
 import jwtDecode from "jwt-decode";
@@ -106,8 +106,8 @@ export default function Favourite() {
         })
         .catch((err: any) => console.log(err));
 
-      const data = await getListTag();
-      setListTags(data);
+      const data = await getAllTag();
+      setListTags(data.data);
     };
     fetchData();
   }, []);
@@ -162,7 +162,7 @@ export default function Favourite() {
             padding: "0 160px 30px 160px",
           }}
         >
-          <Tags />
+          <Tags listTags={listTags} />
           <Card className={classes.cardCaption}>
             {listDataSearch?.map((item: any, index) => {
               return (

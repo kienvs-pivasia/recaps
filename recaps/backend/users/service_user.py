@@ -42,7 +42,7 @@ def register_user_service():
                         'status': 'success',
                         'message': 'Successfully registered.',
                         'auth_token': auth_token,
-                        'user_name': user.username
+                        'user_name': username
                     }
                     session.close()
                     

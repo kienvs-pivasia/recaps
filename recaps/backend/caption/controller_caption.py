@@ -104,6 +104,7 @@ def get_emotion():
 def get_list_caption_login():
     if check_user_login(request) != None:
         user_id = check_user_login(request)
+        # print(user_id)
         if request.method == 'OPTIONS':
             return _build_cors_preflight_response()
         elif request.method == 'POST':

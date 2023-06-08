@@ -59,8 +59,8 @@ export default function Recommendation() {
   );
   useEffect(() => {
     const getAllTags = async () => {
-      const data = await getAllTag();
-      setListTags(data);
+      const data: any = await getAllTag();
+      setListTags(data.data);
     };
     getAllTags().catch((err) => console.log());
   }, []);
@@ -69,8 +69,8 @@ export default function Recommendation() {
     if (listTags) {
       return listTags?.map((item: any) => {
         return {
-          value: item?.id,
-          label: item?.name,
+          value: item?.tag_id,
+          label: item?.tag_name,
         };
       });
     }

@@ -4,7 +4,7 @@ import datetime
 from sqlalchemy.orm import relationship, sessionmaker
 import jwt
 
-engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
+engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 # engine = create_engine("mariadb+mariadbconnector://root:123456789@127.0.0.1:3307/restapidb")
 
 # Tạo một session để thao tác với database
@@ -32,10 +32,10 @@ class User(Base):
     # Quan hệ nhiều-nhiều với bảng Favourite
     favourite_captions = relationship('Caption', secondary='user_favourite_caption')
 
-    def __init__(self, user_id, username, password):
-       self.id = user_id
-       self.username = username
-       self.password = password
+    # def __init__(self, user_id, username, password):
+    #    self.id = user_id
+    #    self.username = username
+    #    self.password = password
 
     def encode_auth_token(self, user_id):
         """

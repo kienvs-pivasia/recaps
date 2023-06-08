@@ -6,6 +6,7 @@ import Select from "react-select";
 import { FormControlLabel } from "@mui/material";
 import { MaterialUISwitch } from "@/container/Recommendation";
 import Button from "../Button/Button";
+import { getAllTag } from "@/apis/listTag.api";
 interface Props {
   open: boolean;
   handleClose: () => void;
@@ -24,7 +25,20 @@ export default function ModalEdit({
   const [emotion, setEmotion] = useState<string>("True");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<any>(null);
+  const [dataTag, setDataTag] = useState<any>(null);
   const [selectedTag, setSelectedTag] = useState<any>(null);
+
+  useEffect(() => {
+    const getAllTags = async () => {
+      const data = await getAllTag();
+      return data;
+    };
+    window.setTimeout(() => {
+      getAllTags()
+        .then((res) => setDataTag(res.data))
+        .catch((err) => console.log(err));
+    }, 300);
+  }, []);
 
   useEffect(() => {
     if (item) {
@@ -57,15 +71,15 @@ export default function ModalEdit({
   );
 
   const tagOptions = useMemo(() => {
-    if (listTag) {
-      return listTag?.map((item: any) => {
+    if (dataTag) {
+      return dataTag?.map((item: any) => {
         return {
-          value: item?.id,
-          label: item?.name,
+          value: item?.tag_id,
+          label: item?.tag_name,
         };
       });
     }
-  }, [listTag]);
+  }, [dataTag]);
 
   const defaultValueTag = useMemo(() => {
     if (tagOptions) {
@@ -111,7 +125,6 @@ export default function ModalEdit({
               isMulti
               options={tagOptions}
               className={classes.selectInput}
-              // defaultValue={tagOptions[0]}
               value={selectedTag || defaultValueTag}
               styles={customStyle}
               onChange={(e) => handleChangeTags(e)}
