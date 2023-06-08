@@ -312,7 +312,7 @@ def edit_content_service(user_id):
         return jsonify({"Message": msg})
 
 def edit_emotion_service(user_id):
-    from ..model import Caption, captions_schema
+    from ..model import Caption
     msg = None
     id = request.json['id']
     caption = session.query(Caption).filter_by(id=id).first()
