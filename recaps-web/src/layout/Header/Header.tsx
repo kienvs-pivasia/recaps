@@ -27,6 +27,7 @@ export default function Header() {
     await doLogout()
       .then(() => {
         localStorage.removeItem("user");
+        localStorage.removeItem("userName");
         router.push("/login");
       })
       .catch(() => console.log());

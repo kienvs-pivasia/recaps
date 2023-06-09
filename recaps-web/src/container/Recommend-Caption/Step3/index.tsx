@@ -10,6 +10,8 @@ import bg from "@/assets/img/test.svg";
 import { useRouter } from "next/router";
 import { checkExistLocalStorage } from "@/helper/ultilities";
 import cx from "classnames";
+import icUnStar from "@/assets/img/icUnStar.svg";
+import icStar from "@/assets/img/icStar.svg";
 
 interface Props {
   path: string;
@@ -17,6 +19,7 @@ interface Props {
   handleClickCompleted: () => void;
   seletedDes: any;
   handleChooseCaption: (item: any) => void;
+  listCaptionFavourite: Array<any>;
 }
 
 export default function Step3({
@@ -24,6 +27,7 @@ export default function Step3({
   handleClickCompleted,
   handleChooseCaption,
   seletedDes,
+  listCaptionFavourite,
 }: Props) {
   const [urlImage, setUrlImage] = useState("");
   const [des, setDes] = useState(null);
@@ -36,7 +40,13 @@ export default function Step3({
   const sortData = useMemo(() => {
     return listDes.sort((a, b) => b.similarity - a.similarity);
   }, [listDes]);
-
+  console.log("123", listCaptionFavourite);
+  const idList = useMemo(() => {
+    if (listCaptionFavourite) {
+      return listCaptionFavourite?.map((item) => item?.id);
+    }
+    return [];
+  }, [listCaptionFavourite]);
   return (
     <>
       <Card className={classes.card}>
@@ -57,17 +67,24 @@ export default function Step3({
                     })}
                     onClick={() => handleChooseCaption(index)}
                   >
-                    <div style={{ maxWidth: 500 }}>
-                      <div className={classes.itemCaps}>{item?.content}</div>
-                      <div className={classes.itemList}>
-                        <div style={{ display: "flex" }}>
-                          {item?.tag?.map((i: string, index: number) => (
-                            <div className={classes.itemTag} key={index}>
-                              {i}
-                            </div>
-                          ))}
+                    <div style={{ display: "flex" }}>
+                      <Image
+                        src={idList.includes(item?.id) ? icStar : icUnStar}
+                        alt=""
+                        style={{ marginRight: 10 }}
+                      />
+                      <div style={{ maxWidth: 500 }}>
+                        <div className={classes.itemCaps}>{item?.content}</div>
+                        <div className={classes.itemList}>
+                          <div style={{ display: "flex" }}>
+                            {item?.tag?.map((i: string, index: number) => (
+                              <div className={classes.itemTag} key={index}>
+                                {i}
+                              </div>
+                            ))}
+                          </div>
+                          {/* <div className={classes.dayItem}>3 days ago</div> */}
                         </div>
-                        {/* <div className={classes.dayItem}>3 days ago</div> */}
                       </div>
                     </div>
                     <div className={classes.similarity}>

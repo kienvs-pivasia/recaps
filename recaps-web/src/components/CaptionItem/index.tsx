@@ -101,7 +101,7 @@ export default function ItemCaption(props: Props) {
           </div>
           <div className={classes.action}>
             <Image
-              src={item?.emotion === "True" ? icSmile : icSad}
+              src={item?.emotion === "1" ? icSmile : icSad}
               alt=""
               width={24}
               height={24}

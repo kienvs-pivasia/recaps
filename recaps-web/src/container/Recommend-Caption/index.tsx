@@ -17,6 +17,7 @@ import {
 } from "@/apis/recommend.api";
 import { toastError } from "@/helper/toastMessage";
 import CompleteStep from "./CompleteStep";
+import { getListCaptionFavourite } from "@/apis/captions.api";
 
 export default function RecommendCaption() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function RecommendCaption() {
   const [listDes, setListDes] = useState([]);
   const [emotion, setEmotion] = useState(null);
   const [seletedDes, setSelectedDes] = useState<any>(0);
-  const [clearState, setClearState] = useState<boolean>(false);
+  const [listCaptionFavourite, setListCaptionFavourite] = useState<any>([]);
   const renderHeader = useMemo(() => {
     return (
       <div style={{ backgroundColor: "#d5b6ff" }}>
@@ -52,15 +53,14 @@ export default function RecommendCaption() {
     [path, image]
   );
 
-  // useEffect(() => {
-  //   if (clearState) {
-  //     // setImage(null);
-  //     // setPath(null);
-  //     setImagePath(null);
-  //     setSelectedDes(0);
-  //     setClearState(false);
-  //   }
-  // }, [router, clearState]);
+  useEffect(() => {
+    const fetchData = async () => {
+      await getListCaptionFavourite().then((res) => {
+        setListCaptionFavourite(res?.data);
+      });
+    };
+    fetchData();
+  }, []);
 
   const handleUploaded = useCallback(async (item: any) => {
     const formData = new FormData();
@@ -96,7 +96,7 @@ export default function RecommendCaption() {
     if (router.pathname.includes("account")) {
       await getListCaptionForLogin(formData)
         .then((res) => {
-          setListDes(res.data);
+          setListDes(res?.data);
           router.replace({
             query: {
               step: "4",
@@ -143,10 +143,8 @@ export default function RecommendCaption() {
   );
   const handleBack = useCallback(() => {
     if (router.pathname.includes("account")) {
-      // setClearState(true);
       return router.push(`/account/`);
     }
-    // setClearState(true);
     return router.push(`/`);
   }, []);
 
@@ -191,6 +189,7 @@ export default function RecommendCaption() {
             handleClickCompleted={handleClickCompleted}
             handleChooseCaption={handleChooseCaption}
             seletedDes={seletedDes}
+            listCaptionFavourite={listCaptionFavourite}
           />
         );
 

@@ -136,7 +136,7 @@ export default function ModalEdit({
               control={
                 <MaterialUISwitch
                   sx={{ ml: 5 }}
-                  defaultChecked={item?.emotion === "True" ? true : false}
+                  defaultChecked={item?.emotion === "1" ? true : false}
                   onChange={(e) => handleChangeEmotion(e.target.checked)}
                 />
               }

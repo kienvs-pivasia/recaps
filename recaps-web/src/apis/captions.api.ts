@@ -20,9 +20,8 @@ interface NewCaptionBody {
   IDUser: string;
 }
 
-const token = checkExistLocalStorage() && localStorage.getItem("user");
-
 export function getListCaptions() {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
   return axios.get(`http://127.0.0.1:5000/caption/get_all_caption`, {
     headers: {
       Authorization: `${token}`,
@@ -32,6 +31,7 @@ export function getListCaptions() {
 
 export function addNewCaption(body: NewCaptionBody) {
   // return authorizedRequest.post(`/caption/add_caption`, body);
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
 
   return axios.post(`http://127.0.0.1:5000/caption/add_caption`, body, {
     headers: {
@@ -41,6 +41,8 @@ export function addNewCaption(body: NewCaptionBody) {
 }
 
 export function updateContentCaption(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   // return authorizedRequest.post(`/UpdateCaption`, body);
   return axios.put(`http://127.0.0.1:5000/caption/edit_content`, body, {
     headers: {
@@ -50,6 +52,8 @@ export function updateContentCaption(body: any) {
 }
 
 export function updateEmotionCaption(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios.put(`http://127.0.0.1:5000/caption/edit_emotion`, body, {
     headers: {
       Authorization: `${token}`,
@@ -58,6 +62,8 @@ export function updateEmotionCaption(body: any) {
 }
 
 export function updateTagCaption(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios.put(`http://127.0.0.1:5000/caption/edit_tag_id`, body, {
     headers: {
       Authorization: `${token}`,
@@ -66,6 +72,8 @@ export function updateTagCaption(body: any) {
 }
 
 export function deleteCaption(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios.post(`http://127.0.0.1:5000/caption/delete_caption`, body, {
     headers: {
       Authorization: `${token}`,
@@ -74,6 +82,8 @@ export function deleteCaption(body: any) {
 }
 
 export function getListCaptionFavourite() {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios
     .get(`http://127.0.0.1:5000/caption/get_caption_favorite`, {
       headers: {
@@ -87,6 +97,8 @@ export function getListCaptionFavourite() {
 }
 
 export function addCaptionFavorite(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios.post(`http://127.0.0.1:5000/caption/add_favorite`, body, {
     headers: {
       Authorization: `${token}`,
@@ -95,6 +107,8 @@ export function addCaptionFavorite(body: any) {
 }
 
 export function removeCaptionFavorite(body: any) {
+  const token = checkExistLocalStorage() && localStorage.getItem("user");
+
   return axios.post(`http://127.0.0.1:5000/caption/remove_favorite`, body, {
     headers: {
       Authorization: `${token}`,
