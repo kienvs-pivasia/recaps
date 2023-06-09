@@ -6,7 +6,7 @@ import Card from "@/components/Cards";
 import Button from "@/components/Button/Button";
 import Select from "react-select";
 import cx from "classnames";
-import logo from "@/assets/img/logo.png";
+import logo from "@/assets/img/logo.jpg";
 import icClock from "@/assets/img/icClock.svg";
 import icSmile from "@/assets/img/icSmile.svg";
 import icSad from "@/assets/img/icSad.svg";

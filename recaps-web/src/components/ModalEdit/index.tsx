@@ -22,7 +22,7 @@ export default function ModalEdit({
   handleUpdate,
   listTag,
 }: Props) {
-  const [emotion, setEmotion] = useState<string>("True");
+  const [emotion, setEmotion] = useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<any>(null);
   const [dataTag, setDataTag] = useState<any>(null);
@@ -93,9 +93,9 @@ export default function ModalEdit({
   const handleChangeEmotion = useCallback(
     (e: any) => {
       if (e) {
-        return setEmotion("True");
+        return setEmotion(true);
       }
-      return setEmotion("False");
+      return setEmotion(false);
     },
     [emotion]
   );

@@ -40,13 +40,15 @@ export default function Step3({
   const sortData = useMemo(() => {
     return listDes.sort((a, b) => b.similarity - a.similarity);
   }, [listDes]);
-  console.log("123", listCaptionFavourite);
+
   const idList = useMemo(() => {
     if (listCaptionFavourite) {
       return listCaptionFavourite?.map((item) => item?.id);
     }
     return [];
   }, [listCaptionFavourite]);
+  console.log("s", seletedDes);
+
   return (
     <>
       <Card className={classes.card}>

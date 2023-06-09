@@ -137,6 +137,7 @@ export default function RecommendCaption() {
 
   const handleChooseCaption = useCallback(
     (item: any) => {
+      console.log("🚀 ~ file: index.tsx:238 ~ RecommendCaption ~ item:", item);
       setSelectedDes(item);
     },
     [seletedDes]
@@ -200,6 +201,7 @@ export default function RecommendCaption() {
             path={imagePath}
             handleBack={handleBack}
             listDes={listDes}
+            emotion={emotion}
           />
         );
 

@@ -22,13 +22,6 @@ from ..model import session
 emo_md = load_model('statics/model/Image_emotion/imageclassifier.h5')
 ft_md = fasttext.load_model('statics/model/cc.vi.300.bin')
 
-# Tạo đối tượng session
-# engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
-# engine = create_engine("mariadb+mariadbconnector://root:12345678@127.0.0.1:3307/restapidb")
-
-# Session = sessionmaker(bind=engine)
-# session = Session()
-
 def add_image_service(user_id):
     from ..model import Image
     if 'file' not in request.files:
@@ -55,6 +48,7 @@ def get_all_captions_admin_service(user_id):
     tmp = []
     for caption in all_captions:
         tags = caption.tags
+        print(bool(caption.emotion), caption.emotion, caption.id)
         tmp.append({'id':caption.id, 'content':caption.content, 'author_id':user_id, 'created_at':caption.created_at, 'emotion':caption.emotion, 'tag': [tag.name for tag in tags]})
     return jsonify(tmp)
 
@@ -80,6 +74,7 @@ def add_caption_service(user_id):
     from ..model import Caption, Tag
     text = request.json["content"]
     emotion = request.json["emotion"]
+    # print(emotion)
     tags = request.json["tag"]
     caption = session.query(Caption).filter(Caption.content == text).first()
     if caption:
@@ -87,7 +82,7 @@ def add_caption_service(user_id):
     else:
         newCaption = Caption(
             content=text,
-            emotion=emotion, 
+            emotion=bool(emotion), 
             created_at=datetime.datetime.now(),
             author_id=user_id,
         )
@@ -106,14 +101,6 @@ def delete_caption_service(user_id):
     from sqlalchemy import delete
     msg = None
     caption_id = request.json['id']
-    # caption = session.query(Caption).filter_by(id == id).first()
-    # if caption.author_id != g.user.id:
-    #     msg = "This caption is not belong to you"
-    #     return msg
-    # else:
-    #     session.delete(caption)
-    #     session.commit()
-
 
     caption_to_delete = session.query(Caption).filter(Caption.id == caption_id).one()
     if caption_to_delete.author_id != user_id:
@@ -201,18 +188,19 @@ def get_list_caption_no_login_service():
         filelink = os.path.join('statics/Images/uploads', 'tmp.jpg')
         img.save(filelink)
         des = generate_caption_img(filelink)
+        emotion = emotion_img(filelink, emo_md)
         translator = Translator()
         des = translator.translate(des, dest="vi").text
         list_cap = []
         vector_des = sentence_embedding(des, ft_md)
-        captions = session.query(Caption).filter(Caption.author_id == 1).all()
+        captions = session.query(Caption).filter(and_(Caption.author_id == 1, Caption.emotion == emotion)).all()
         for caption in captions:
             vector_cap = sentence_embedding(caption.content, ft_md)
             similarity = cosine_similarity([vector_des], [vector_cap])[0][0]
             similarity = round(similarity*100, 2)
             if 50 <= similarity <= 100:
                 tags = caption.tags
-                list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity,'tag': [tag.name for tag in tags]})
+                list_cap.append({'id':caption.id, 'content':caption.content, 'similarity':similarity, 'tag': [tag.name for tag in tags]})
         return jsonify(list_cap)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -233,12 +221,12 @@ def get_list_caption_login_service(user_id):
         filelink = os.path.join('statics/Images/uploads', filename)
         img.save(filelink)
         des = generate_caption_img(filelink)
+        emotion = emotion_img(filelink, emo_md)
         translator = Translator()
         des = translator.translate(des, dest="vi").text
         list_cap = []
         vector_des = sentence_embedding(des, ft_md)
-        # print("in get_list_caption_login", user_id)
-        captions = session.query(Caption).filter(Caption.author_id == user_id).all()
+        captions = session.query(Caption).filter(and_(Caption.author_id == user_id, Caption.emotion == emotion)).all()
         # print(len(captions))
         for caption in captions:
             vector_cap = sentence_embedding(caption.content, ft_md)

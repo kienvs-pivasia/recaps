@@ -8,25 +8,35 @@ import avatarDefault from "@/assets/img/avatarDefault.svg";
 import icClock from "@/assets/img/icClock.svg";
 import bgImg from "@/assets/img/img.svg";
 import icSmile from "@/assets/img/icSmile.svg";
+import icSad from "@/assets/img/icSad.svg";
 import Button from "@/components/Button/Button";
 import { useRouter } from "next/router";
+import { checkExistLocalStorage } from "@/helper/ultilities";
 
 interface Props {
-  seletedDes: any;
+  seletedDes: number;
   path: any;
   handleBack: () => void;
   listDes: any;
+  emotion: any;
 }
 
 export default function CompleteStep(props: Props) {
-  const { seletedDes, path, handleBack, listDes } = props;
+  const { seletedDes, path, handleBack, listDes, emotion } = props;
   const router = useRouter();
-  const selectedDescription = useMemo(() => {
-    if (listDes && seletedDes) {
-      return listDes[seletedDes];
+  const userName = useMemo(() => {
+    if (router.pathname.includes("account")) {
+      const user = checkExistLocalStorage() && localStorage.getItem("userName");
+      return user;
     }
+    return null;
+  }, [router]);
+
+  const selectedDescription = useMemo(() => {
+    return listDes[seletedDes];
   }, [listDes, seletedDes]);
-  console.log("listDes", selectedDescription);
+  console.log("123", emotion);
+
   return (
     <div>
       <div className={classes.container}>
@@ -34,7 +44,9 @@ export default function CompleteStep(props: Props) {
           <div className={classes.infoUser}>
             <Image src={avatarDefault} alt="" />
             <div style={{ marginLeft: 10 }}>
-              <div className={classes.name}>Khách qua đường</div>
+              <div className={classes.name}>
+                {!!userName ? userName : `Khách qua đường`}
+              </div>
               <div className={classes.time}>
                 less than a minute ago <Image src={icClock} alt="" />
               </div>
@@ -52,7 +64,12 @@ export default function CompleteStep(props: Props) {
             height={300}
           />
           <div style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
-            <Image src={icSmile} alt="" width={32} height={32} />
+            <Image
+              src={emotion ? icSmile : icSad}
+              alt=""
+              width={32}
+              height={32}
+            />
             <div style={{ display: "flex", marginLeft: 20 }}>
               {selectedDescription?.tag?.map((i: string, index: number) => (
                 <div className={classes.tag} key={index}>

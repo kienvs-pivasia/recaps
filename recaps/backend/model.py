@@ -93,7 +93,7 @@ class Caption(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     content = Column(String(255), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.now())
-    emotion = Column(String(255), nullable=True)
+    emotion = Column(String(255), nullable=False)
 
     # Quan hệ một-nhiều với bảng Image
     image_id = Column(Integer, ForeignKey('images.id'))

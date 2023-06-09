@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import logo from "@/assets/img/logo.png";
+import avatar from "@/assets/img/logo.jpg";
 import classes from "./header.module.scss";
 import Button from "@/components/Button/Button";
 import cx from "classnames";
@@ -66,7 +67,7 @@ export default function Header() {
             </div>
             <div className={classes.itemNoti}>
               <Image
-                src={logo}
+                src={avatar}
                 alt=""
                 width={30}
                 height={30}
